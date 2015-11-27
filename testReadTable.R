@@ -1,7 +1,7 @@
 #drv = dbDriver("MySQL")
 
 library(RMySQL)
-source("C:\\Users\\user\\Desktop\\codesR\\readTable.R");
+source("readTable.R");
 
 #mydb = dbConnect(MySQL(), user='root', password='', dbname='port-cros')
 mydb = readMyTable();
