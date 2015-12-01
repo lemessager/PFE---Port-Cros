@@ -23,14 +23,11 @@
 ####################  Extaction of the data  ########################
 #####################################################################
 # Clear the console
-cat("\014") 
-
-# Connection with the database
-setwd("/Users/zhuyuting/Desktop/PFE/PFE---Port-Cros")
+cat("\014")
 
 # Connection with the database
 source("readTable.R")
-channel =  readMyTable(); 
+channel =  readMyTable();
 
 # Consideration of two tables 'frequentation'
 frequentation_nautique <- dbGetQuery(channel, "SELECT * FROM `enquete sur la frequentation nautique`")
