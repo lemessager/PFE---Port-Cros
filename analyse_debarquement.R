@@ -9,7 +9,7 @@
 source("satisfaction_version_complet.R")
 
 # Consideration of the tables 'debarquement'
-debarquement <- dbGetQuery(channel, "SELECT * FROM BOUNTILLES_PC_juillet2013.debarquements_jour;")
+debarquement <- dbGetQuery(channel, "SELECT * FROM debarquements_jour;")
 
 # Preparation for merge the tables and Normalize the number of passenger
 debarquement <- debarquement[-1]
@@ -40,6 +40,7 @@ show_res <- function(mat_res, mark){
   lines(x=mat_res$date, y=mat_res$nbr_passager,col="green")
   lines(x=mat_res$date, y=mat_res$result, col="red")
   legend("bottomright",legend=c("niveau de satisfaction", "nombre de passager"), col=c(2,3), lty=1)
+  cor(mat_res$nbr_passager,mat_res$result)
 }
 
 show_res(mat_res = nautique_with_passager, mark = "frequentation nautique")
