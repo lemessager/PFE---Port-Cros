@@ -98,7 +98,6 @@ sat_remarque_with_date <- data.frame(cbind(date_remarque, remarque_final))
 #####################  Analyse of the data  #########################
 #####################################################################
 
-install.packages("plyr")
 library("plyr")
 
 # Regroup the data by date and calculate the average
