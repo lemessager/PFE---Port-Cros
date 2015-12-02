@@ -39,7 +39,7 @@ frequentation_pietonne <- frequentation_pietonne[-1]
 frequentation_nautique <- frequentation_nautique[-1]
 remarque <- remarque[-1]
 
-# Extraction of the columns that signify the satisfaction degree
+# Extraction of the date
 date_nautique <- substr(frequentation_nautique[,1],1,10)
 date_pieton <- substr(frequentation_pietonne[,1],1,10)
 date_remarque <- substr(remarque[,1],1,10)
@@ -62,6 +62,7 @@ cal_na <- function(sat_der){
   res <- length(which(!is.na(sat_der)&sat_der!=0))
   return(res) 
 }
+
 # Normalise the data
 sat_cal <- function(sat_der, mark_val){
   num_vec <- apply(sat_der,1,cal_na)
@@ -71,6 +72,7 @@ sat_cal <- function(sat_der, mark_val){
   res <- cal_vec*sat_der
   return(res)
 }
+
 # Positive mark signifies a greater satisfaction
 satisfait_nautique_norm <- sat_cal(sat_der = satisfait_nautique, mark_val = 4)
 derangeant_nautique_norm <- sat_cal(sat_der = derangeant_nautique, mark_val = -4)
