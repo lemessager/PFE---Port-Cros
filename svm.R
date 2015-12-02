@@ -6,7 +6,7 @@ cat("\014")
 
 # Connection with the database
 source("readTable.R")
-channel =  readMyTable();
+channel =  readMyTable()
 
 library(e1071)
 
