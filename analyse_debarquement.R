@@ -9,7 +9,7 @@
 source("satisfaction_version_complet.R")
 
 # Consideration of the tables 'debarquement'
-debarquement <- dbGetQuery(channel, "SELECT * FROM New_BOUNTILLES_PC_juillet2013.debarquements_journaliers;")
+debarquement <- dbGetQuery(channel, "SELECT * FROM debarquements_journaliers")
 
 # Preparation for merge the tables and Normalize the number of passenger
 debarquement <- debarquement[-1]

@@ -31,9 +31,9 @@ source("readTable.R")
 channel =  readMyTable(); 
 
 # Consideration of two tables 'frequentation'
-frequentation_nautique <- dbGetQuery(channel, "SELECT * FROM New_BOUNTILLES_PC_juillet2013.enquete_frequentation_nautique;")
-frequentation_pietonne <- dbGetQuery(channel, "SELECT * FROM New_BOUNTILLES_PC_juillet2013.enquete_frequentation_pietonne")
-remarque <- dbGetQuery(channel, "SELECT * FROM New_BOUNTILLES_PC_juillet2013.remarques")
+frequentation_nautique <- dbGetQuery(channel, "SELECT * FROM enquete_frequentation_nautique")
+frequentation_pietonne <- dbGetQuery(channel, "SELECT * FROM enquete_frequentation_pietonne")
+remarque <- dbGetQuery(channel, "SELECT * FROM remarques")
 
 # Delete the first column
 frequentation_pietonne <- frequentation_pietonne[-1]
