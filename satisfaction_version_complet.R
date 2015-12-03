@@ -111,5 +111,3 @@ sat_result_remarque <- ddply(sat_remarque_with_date, .(date_remarque), summarize
 plot(x = sat_result_remarque$date_remarque, y = sat_result_remarque$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Remarque", ylim=c(-1,1))
 plot(x = sat_result_nautique$date_nautique, y = sat_result_nautique$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Nautique", ylim=c(-1,1))
 plot(x = sat_result_pieton$date_pieton, y = sat_result_pieton$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Pieton", ylim=c(-1,1))
-
-source("close_db_connections.R")

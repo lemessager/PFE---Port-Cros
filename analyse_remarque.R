@@ -57,5 +57,3 @@ show_res(sat_der = critere_satisfait, mat_res = criteria_sat_2)  # critique nega
 show_res(sat_der = critere_derangeant, mat_res = criteria_der_1) # trop
 show_res(sat_der = critere_derangeant, mat_res = criteria_der_2) # pas assez
 show_res(sat_der = critere_derangeant, mat_res = criteria_der_3) # bien
-
-source("close_db_connections.R")

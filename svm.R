@@ -55,6 +55,6 @@ capa_charge <- function(day, month){
   return(result)
 }
 
-test <- capa_charge(15,7)
+test <- capa_charge(15,1)
 
 source("close_db_connections.R")
