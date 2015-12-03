@@ -27,9 +27,6 @@
 cat("\014") 
 
 # Connection with the database
-setwd("/Users/zhuyuting/Desktop/PFE/PFE---Port-Cros")
-
-# Connection with the database
 source("readTable.R")
 channel =  readMyTable(); 
 
