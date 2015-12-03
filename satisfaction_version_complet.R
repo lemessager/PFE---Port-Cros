@@ -18,28 +18,32 @@
 #      We can consider that the visitor gave their opinion on the management of park. So the result can be taken as positive.
 # Editor: ZHU Yuting
 # Version: 2015/11/30
+#
 
 #####################################################################
 ####################  Extaction of the data  ########################
 #####################################################################
 # Clear the console
-cat("\014")
+cat("\014") 
+
+# Connection with the database
+setwd("/Users/zhuyuting/Desktop/PFE/PFE---Port-Cros")
 
 # Connection with the database
 source("readTable.R")
-channel =  readMyTable();
+channel =  readMyTable(); 
 
 # Consideration of two tables 'frequentation'
-frequentation_nautique <- dbGetQuery(channel, "SELECT * FROM `enquete sur la frequentation nautique`")
-frequentation_pietonne <- dbGetQuery(channel, "SELECT * FROM `enquete sur la frequentation pietonne`")
-remarque <- dbGetQuery(channel, "SELECT * FROM `remarques`")
+frequentation_nautique <- dbGetQuery(channel, "SELECT * FROM New_BOUNTILLES_PC_juillet2013.enquete_frequentation_nautique;")
+frequentation_pietonne <- dbGetQuery(channel, "SELECT * FROM New_BOUNTILLES_PC_juillet2013.enquete_frequentation_pietonne")
+remarque <- dbGetQuery(channel, "SELECT * FROM New_BOUNTILLES_PC_juillet2013.remarques")
 
 # Delete the first column
 frequentation_pietonne <- frequentation_pietonne[-1]
 frequentation_nautique <- frequentation_nautique[-1]
 remarque <- remarque[-1]
 
-# Extraction of the date
+# Extraction of the columns that signify the satisfaction degree
 date_nautique <- substr(frequentation_nautique[,1],1,10)
 date_pieton <- substr(frequentation_pietonne[,1],1,10)
 date_remarque <- substr(remarque[,1],1,10)
@@ -62,7 +66,6 @@ cal_na <- function(sat_der){
   res <- length(which(!is.na(sat_der)&sat_der!=0))
   return(res) 
 }
-
 # Normalise the data
 sat_cal <- function(sat_der, mark_val){
   num_vec <- apply(sat_der,1,cal_na)
@@ -72,7 +75,6 @@ sat_cal <- function(sat_der, mark_val){
   res <- cal_vec*sat_der
   return(res)
 }
-
 # Positive mark signifies a greater satisfaction
 satisfait_nautique_norm <- sat_cal(sat_der = satisfait_nautique, mark_val = 4)
 derangeant_nautique_norm <- sat_cal(sat_der = derangeant_nautique, mark_val = -4)
@@ -100,15 +102,16 @@ sat_remarque_with_date <- data.frame(cbind(date_remarque, remarque_final))
 #####################  Analyse of the data  #########################
 #####################################################################
 
+# install.packages("plyr")
 library("plyr")
 
 # Regroup the data by date and calculate the average
-sat_result_nautique <- ddply(sat_nautique_with_date, .(date_nautique), summarize, moyen=mean(as.numeric(levels(V2))[V2]))
-sat_result_pieton <- ddply(sat_pieton_with_date, .(date_pieton), summarize, moyen=mean(as.numeric(levels(V2))[V2]))
-sat_result_remarque <- ddply(sat_remarque_with_date, .(date_remarque), summarize, moyen=mean(as.numeric(levels(V2))[V2]))
+sat_result_nautique <- ddply(sat_nautique_with_date, .(date_nautique), summarize, moyen=-mean(as.numeric(levels(V2))[V2]))
+sat_result_pieton <- ddply(sat_pieton_with_date, .(date_pieton), summarize, moyen=-mean(as.numeric(levels(V2))[V2]))
+sat_result_remarque <- ddply(sat_remarque_with_date, .(date_remarque), summarize, moyen=-mean(as.numeric(levels(V2))[V2]))
 
 # Show the result
-plot(x = sat_result_remarque$date_remarque, y = -sat_result_remarque$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Remarque", ylim=c(-1,1))
-plot(x = sat_result_nautique$date_nautique, y = -sat_result_nautique$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Nautique", ylim=c(-1,1))
-plot(x = sat_result_pieton$date_pieton, y = -sat_result_pieton$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Pieton", ylim=c(-1,1))
+plot(x = sat_result_remarque$date_remarque, y = sat_result_remarque$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Remarque", ylim=c(-1,1))
+plot(x = sat_result_nautique$date_nautique, y = sat_result_nautique$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Nautique", ylim=c(-1,1))
+plot(x = sat_result_pieton$date_pieton, y = sat_result_pieton$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Pieton", ylim=c(-1,1))
 
