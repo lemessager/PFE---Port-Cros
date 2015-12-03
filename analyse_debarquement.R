@@ -52,4 +52,4 @@ nautique_with_passager_ss <- merge(debarquement_passager_ss, sat_result_nautique
 pieton_with_passager_ss <- merge(debarquement_passager_ss, sat_result_pieton, by="date")
 remarque_with_passager_ss <- merge(debarquement_passager_ss, sat_result_remarque, by="date")
 
-
+source("close_db_connections.R")

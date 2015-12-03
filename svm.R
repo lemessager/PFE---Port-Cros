@@ -52,11 +52,9 @@ capa_charge <- function(day, month){
   plot(result,xlab="Number of passengers", ylab="Satisfaction")
   abline(h = 0, col = "red")
   title(paste("Prediction of the satisfaction for the ",month,"/", day))
+  return(result)
 }
 
-capa_charge(20,6)
+test <- capa_charge(15,7)
 
-# Closes every MySQL connection
-cons <- dbListConnections(MySQL())
-for(con in cons)
-  dbDisconnect(con)
+source("close_db_connections.R")

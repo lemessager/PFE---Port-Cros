@@ -41,8 +41,8 @@ criteria_der_3 <- apply(derangeant_remarque, 2, cal_pos,3) # bien
 
 ############### Afficher le resultat #################
 
-library(ggplot2)
-library(ggthemes)
+library('ggplot2')
+library('ggthemes')
 critere_derangeant <- colnames(derangeant_remarque)
 critere_satisfait <- colnames(satisfait_remarque)
 show_res <- function(sat_der, mat_res){
@@ -57,3 +57,5 @@ show_res(sat_der = critere_satisfait, mat_res = criteria_sat_2)  # critique nega
 show_res(sat_der = critere_derangeant, mat_res = criteria_der_1) # trop
 show_res(sat_der = critere_derangeant, mat_res = criteria_der_2) # pas assez
 show_res(sat_der = critere_derangeant, mat_res = criteria_der_3) # bien
+
+source("close_db_connections.R")

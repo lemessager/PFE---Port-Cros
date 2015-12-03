@@ -48,8 +48,8 @@ date_remarque <- substr(remarque[,1],1,10)
 # Neglect of 'null', 'NA' and 'no result'
 satisfait_nautique <- frequentation_nautique[c(3,5,6,7,18)]%%5
 derangeant_nautique <- frequentation_nautique[c(8,9,11,12,15,16)]%%5
-satisfait_pieton <- frequentation_pietonne[c(3,4,6,7,18)]%%5
-derangeant_pieton <- frequentation_pietonne[c(8,10,11,13:16)]%%5
+satisfait_pieton <- frequentation_pietonne[c(2,3,5,6,17)]%%5
+derangeant_pieton <- frequentation_pietonne[c(7,9,10,12:15)]%%5
 satisfait_remarque <- remarque[c(5:23,26:30)]%%3
 derangeant_remarque <- remarque[c(24,25)]%%4
 
@@ -112,3 +112,4 @@ plot(x = sat_result_remarque$date_remarque, y = sat_result_remarque$moyen, xlab 
 plot(x = sat_result_nautique$date_nautique, y = sat_result_nautique$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Nautique", ylim=c(-1,1))
 plot(x = sat_result_pieton$date_pieton, y = sat_result_pieton$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Pieton", ylim=c(-1,1))
 
+source("close_db_connections.R")
