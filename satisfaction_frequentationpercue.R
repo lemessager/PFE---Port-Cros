@@ -66,19 +66,19 @@ sat_cal <- function(sat_der, mark_val){
 }
 
 g_freq0 <- sat_cal(sat_der = general_freq, mark_val = 4)
-
+g_pieton0 <- sat_cal(sat_der = general_pieton, mark_val = 4)
 
 #date_pietonne <- date_pietonne[c(1)]
 #on attache la date
-g_pieton <- data.frame(cbind(date_pietonne, general_pieton))
+g_pieton <- data.frame(cbind(date_pietonne, g_pieton0))
 g_freq <- data.frame(cbind(date_pietonne, g_freq0))
 
 
 
 # 4 à 1 -> 0 a 10
-display_pieton <- ddply(g_pieton, .(date_pietonne), summarize, moyen=10-(mean(visite)-1)*3)
-display_frequ  <- ddply(g_freq, .(date_pietonne), summarize, moyen=((mean(imp.fréq.plages)+mean(imp.fréq.sentiers)+mean(imp.fréq.port)+mean(fréq.plages)+mean(fréq.sentiers)+mean(fréq.village))*10))
-
+display_pieton <- ddply(g_pieton, .(date_pietonne), summarize, moyen=mean(visite)*10)
+#display_frequ  <- ddply(g_freq, .(date_pietonne), summarize, moyen=((mean(imp.fréq.plages)+mean(imp.fréq.sentiers)+mean(imp.fréq.port)+mean(fréq.plages)+mean(fréq.sentiers)+mean(fréq.village))*10))
+display_frequ  <- ddply(g_freq, .(date_pietonne), summarize, moyen=((mean(imp.fréq.plages+imp.fréq.sentiers+imp.fréq.port+fréq.plages+fréq.sentiers+fréq.village))*10))
 
 #plot(x = display_pieton$date_pietonne, y = display_pieton$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Remarque", ylim=c(0,10), col="black")
 plot(x = display_pieton$date_pietonne, y = display_pieton$moyen,type="n")
