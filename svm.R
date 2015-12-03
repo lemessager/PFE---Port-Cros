@@ -51,10 +51,8 @@ capa_charge <- function(day, month){
   #result[result > 0] <- 1
   plot(result,xlab="Number of passengers", ylab="Satisfaction")
   abline(h = 0, col = "red")
-  title(paste("Prediction of the satisfaction for the ",month,"/", day))
+  title(paste("Prediction of the satisfaction for the",day,"/", month))
   return(result)
 }
-
-test <- capa_charge(15,1)
 
 source("close_db_connections.R")
