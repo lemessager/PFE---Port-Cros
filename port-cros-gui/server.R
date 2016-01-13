@@ -2,7 +2,7 @@ library(shiny)
 
 shinyServer(function(input, output){
   output$satPlot <- renderPlot({
-    #source("satisfaction_version_complet.R")
+    source("satisfaction_version_complet.R")
     
     # supplementaire a satisfaction_version_complet.R
     
