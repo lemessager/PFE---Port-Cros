@@ -4,6 +4,7 @@ shinyServer(function(input, output){
   
   setwd("../data/")
   source("satisfaction_version_complet.R")
+  source("analyse_debarquement.R")
   source("svm.R")
   
   training_svm()
@@ -45,5 +46,13 @@ shinyServer(function(input, output){
       title(paste("The optimal number of visitors is: ",max_v))
     })
   })
+  
+  output$disPlot <- renderPlot({
+    
+  
+    colm <- as.numeric(input$deb)
+    hist(iris[,colm], breaks=seq(0,max(iris[,colm], l=input$jour)))   
     
 })
+})
+  
