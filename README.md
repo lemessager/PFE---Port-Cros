@@ -1,4 +1,4 @@
-# readme
+# README.MD
 
 Dans le dossier home, creer un fichier readTable.R contenant le code ci-dessous : (avec les bons paramètres)
 
