@@ -3,32 +3,28 @@ library(shiny)
 shinyServer(function(input, output){
   
   setwd("../data/")
-  source("satisfaction_version_complet.R")
   source("analyse_debarquement.R")
   source("svm.R")
   
   training_svm()
   
+  # TAB1 : Affichage des points de satisfaction 
   output$satPlot <- renderPlot({
-    
-    # supplementaire a satisfaction_version_complet.R
-    
-    colnames(sat_result_remarque) <- c("date", "remarque")
-    colnames(sat_result_pieton) <- c("date", "pieton")
-    colnames(sat_result_nautique) <- c("date", "nautique")
-    
-    sat_result <- merge(sat_result_remarque, sat_result_nautique, all = T, by="date")
-    sat_result <- merge(sat_result, sat_result_pieton, all = T, by = "date")
-    
-    #####
-    
     result <- sat_result[,input$sat]
     result <- data.frame(sat_result$date, result)
     result <- result[-which(is.na(result$result)),]    
     plot(x = result$sat_result.date, y = result$result, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction", ylim=c(-1,1))
   })
   
+  # TAB2 : Affichage des liens entre la satisfaction et la frequentation
+  output$nomPlot <- renderPlot({
+    eval(parse(text = paste(
+      "final_result <- ",input$nom,"_with_passager",sep = ""
+    )))
+    show_res(mat_res = final_result, mark = paste("frequentation",input$nom))
+  })
 
+  # TAB 3 : Pr??diction avec SVM
   observeEvent(input$predict, {
 
     withProgress(message = 'Calcul en cours...', value = 0, {
@@ -47,6 +43,7 @@ shinyServer(function(input, output){
     })
   })
   
+  # TAB 4 : ???
   output$disPlot <- renderPlot({
     
   

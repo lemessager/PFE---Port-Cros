@@ -5,14 +5,14 @@ shinyUI(navbarPage("Port-Cros GUI",
                    
                    # TAB 1
                    tabPanel(
-                     "Visualistion données satisfaction",
+                     "Visualistion donn??es satisfaction",
                      
                      sidebarLayout(
                        sidebarPanel(
                          selectInput("sat", "Niveau de satisfaction",
                                      choices = c("pieton","nautique","remarque")),
                          hr(),
-                         helpText("Data from the questionnaires")
+                         helpText("Donn??es des enqu??tes")
                        ),
                        mainPanel(
                          plotOutput("satPlot")
@@ -22,25 +22,42 @@ shinyUI(navbarPage("Port-Cros GUI",
                    
                    # TAB 2
                    tabPanel(
-                     "Prédiction satisfaction",
+                     "Visualistion donn??es satisfaction / frequentation",
+                     
+                     sidebarLayout(
+                       sidebarPanel(
+                         selectInput("nom", "Niveau de satisfaction en fonction de frequentation",
+                                     choices = c("pieton","nautique")),
+                         hr(),
+                         helpText("Resultat apres l'analyse")
+                       ),
+                       mainPanel(
+                         plotOutput("nomPlot")
+                       )
+                     )
+                   ),
+                   
+                   # TAB 3
+                   tabPanel(
+                     "Pr??diction satisfaction",
                      
                      sidebarLayout(
                        sidebarPanel(
                          sliderInput("day", "Jour", 1, 31, 15),
                          selectInput("month", "Mois", c("Janvier" = 1,
-                                                        "Février" = 2,
+                                                        "F??vrier" = 2,
                                                         "Mars" = 3,
                                                         "Avril" = 4,
                                                         "Mai" = 5,
                                                         "Juin" = 6,
                                                         "Juillet" = 7,
-                                                        "Août" = 8,
+                                                        "Ao??t" = 8,
                                                         "Septembre" = 9,
                                                         "Octobre" = 10,
                                                         "Novembre" = 11,
-                                                        "Décembre" = 12)),
+                                                        "D??cembre" = 12)),
                          hr(),
-                         actionButton("predict", "Lancer la prédiction")
+                         actionButton("predict", "Lancer la pr??diction")
                        ),
                        mainPanel(
                          plotOutput("svmPlot")
@@ -48,7 +65,7 @@ shinyUI(navbarPage("Port-Cros GUI",
                      )
                    ),
                    
-                   #TAB 3
+                   #TAB 4
                    tabPanel("Analyse Debarquement !",
                    sidebarLayout(
                      sidebarPanel(
