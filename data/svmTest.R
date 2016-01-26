@@ -9,27 +9,34 @@ source("analyse_debarquement.R")
 
 library(e1071)
 
-################### GENERAL STUFF SUCH AS LOADING DATA ############################
+#Benjamin CLAQUIN
+#26/01/16
+#################################################################
+################### Testing the SVM  ############################
+#################################################################
 
-
-#supressing data with zeros
-pieton_with_passager_ss <- pieton_with_passager[21:95,]
-
-satisfaction <- pieton_with_passager_ss$result
+satisfaction_brut <- pieton_with_passager_ss$result
 nbr_passagers <- pieton_with_passager_ss$debarquement..nombre.de.passagers.
 days <- as.integer(substr(pieton_with_passager_ss$date,9,10))
 months <- as.integer(substr(pieton_with_passager_ss$date,6,7))
 
-training_data <- data.frame(days,months,nbr_passagers)
+full_data <- data.frame(days,months,nbr_passagers)
 
-
+# full_data with the satisfaction
+full_data_results <- cbind(full_data,satisfaction_brut)
 
 colnames(training_data) <- c("days","months","nbr_passagers")
 
 # Creating 2 labels: one for unsatisfaction, the other for satisfaction
-satisfaction[satisfaction <= 0] <- -1
-satisfaction[satisfaction > 0] <- 1
+satisfaction[satisfaction_brut <= 0] <- -1
+satisfaction[satisfaction_brut > 0] <- 1
 
+full_data_dec = dim(full_data)[1]/10;
+
+test_data = full_data_results[1:full_data_dec,];
+
+
+training_data = full_data[(full_data_dec):(10*full_data_dec),];
 
 
 ################### TRAINING FUNCTION ############################
@@ -61,27 +68,21 @@ training_svm <- function () {
 ################### PREDICT FUNCTION ############################
 
 
-capa_charge <- function(day, month){
+capa_charge_test <- function(day, month, nbOfPassenger){
   # Init
   result <- 0
-  # We predict the satisfaction for every possible passengers values between 1 and 2000
-  for(i in 1:2000) 
-  {
-    B = matrix(c(day,month,i), nrow=1, ncol=3)
-    result[i] <- predict(model,B)
-    #incProgress(1/2000, detail = paste(trunc(100*i/2000)," %"))
-  }
   
-  #result[result <= 0] <- -1
-  #result[result > 0] <- 1
-  plot(result,xlab="Number of passengers", ylab="Satisfaction")
-  abline(h = 0, col = "red")
-  title(paste("Prediction of the satisfaction for the",day,"/", month))
+  # We predict the satisfaction for the value in parameter
+  B = matrix(c(day,month,nbOfPassenger), nrow=1, ncol=3);
+  result <- predict(model,B)
+
   return(result)
 }
 
+get_all_test_data <- function (day,month){
+  
+  
+}
 
-training_svm();
-capa_charge(6,6);
 
 source("close_db_connections.R")
