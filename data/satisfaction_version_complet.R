@@ -53,6 +53,16 @@ derangeant_pieton <- frequentation_pietonne[c(7,9,10,12:15)]%%5
 satisfait_remarque <- remarque[c(5:23,26:30)]%%3
 derangeant_remarque <- remarque[c(24,25)]%%4
 
+# Reconstruct the dataframe with date
+# pieton <- data.frame(date_pieton, satisfait_pieton)
+# nautique <- data.frame(date_nautique, satisfait_nautique)
+# remarque_1 <- data.frame(date_remarque, satisfait_remarque)
+
+# Write to csv file for further analysis
+# write.csv(pieton, file = "pieton.csv")
+# write.csv(nautique, file = "nautique.csv")
+# write.csv(remarque_1, file = "remarque.csv")
+
 #####################################################################
 ####################  Operation on the data  ########################
 #####################################################################
@@ -63,6 +73,7 @@ cal_na <- function(sat_der){
   res <- length(which(!is.na(sat_der)&sat_der!=0))
   return(res) 
 }
+
 # Normalise the data
 sat_cal <- function(sat_der, mark_val){
   num_vec <- apply(sat_der,1,cal_na)
@@ -72,11 +83,14 @@ sat_cal <- function(sat_der, mark_val){
   res <- cal_vec*sat_der
   return(res)
 }
+
 # Positive mark signifies a greater satisfaction
 satisfait_nautique_norm <- sat_cal(sat_der = satisfait_nautique, mark_val = 4)
 derangeant_nautique_norm <- sat_cal(sat_der = derangeant_nautique, mark_val = -4)
+
 satisfait_pieton_norm <- sat_cal(sat_der = satisfait_pieton, mark_val = 4)
 derangeant_pieton_norm <- sat_cal(sat_der = derangeant_pieton, mark_val = -4)
+
 satisfait_remarque_norm <- sat_cal(sat_der = satisfait_remarque, mark_val = 2)
 derangeant_remarque_norm <- sat_cal(sat_der = derangeant_remarque, mark_val = -3)
 
@@ -108,6 +122,14 @@ sat_result_pieton <- ddply(sat_pieton_with_date, .(date_pieton), summarize, moye
 sat_result_remarque <- ddply(sat_remarque_with_date, .(date_remarque), summarize, moyen=-mean(as.numeric(levels(V2))[V2]))
 
 # Show the result
-plot(x = sat_result_remarque$date_remarque, y = sat_result_remarque$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Remarque", ylim=c(-1,1))
-plot(x = sat_result_nautique$date_nautique, y = sat_result_nautique$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Nautique", ylim=c(-1,1))
-plot(x = sat_result_pieton$date_pieton, y = sat_result_pieton$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Pieton", ylim=c(-1,1))
+# plot(x = sat_result_remarque$date_remarque, y = sat_result_remarque$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Remarque", ylim=c(-1,1))
+# plot(x = sat_result_nautique$date_nautique, y = sat_result_nautique$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Nautique", ylim=c(-1,1))
+# plot(x = sat_result_pieton$date_pieton, y = sat_result_pieton$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Pieton", ylim=c(-1,1))
+
+# For the interface
+colnames(sat_result_remarque) <- c("date", "remarque")
+colnames(sat_result_pieton) <- c("date", "pieton")
+colnames(sat_result_nautique) <- c("date", "nautique")
+
+sat_result <- merge(sat_result_remarque, sat_result_nautique, all = T, by="date")
+sat_result <- merge(sat_result, sat_result_pieton, all = T, by = "date")

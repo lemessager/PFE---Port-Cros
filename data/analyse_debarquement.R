@@ -29,12 +29,13 @@ pieton_with_passager <- merge(debarquement_passager, sat_result_pieton, by="date
 remarque_with_passager <- merge(debarquement_passager, sat_result_remarque, by="date")
 
 # Normalize the result of satisfaction in order to do a further analysis
-nautique_with_passager$result <- scale(nautique_with_passager$result, center = T, scale = T)
-pieton_with_passager$result <- scale(pieton_with_passager$result, center = T, scale = T)
-remarque_with_passager$result <- scale(remarque_with_passager$result, center = T, scale = T)
+# nautique_with_passager$result <- scale(nautique_with_passager$result, center = T, scale = T)
+# pieton_with_passager$result <- scale(pieton_with_passager$result, center = T, scale = T)
+# remarque_with_passager$result <- scale(remarque_with_passager$result, center = T, scale = T)
 
 # Show the result
 show_res <- function(mat_res, mark){
+  mat_res$result <- scale(mat_res$result, center = T, scale = T)
   plot(x=mat_res$date, y=mat_res$nbr_passager)
   title(paste("Satisfaction en fonction de", mark, "et le nombre de passager"))
   lines(x=mat_res$date, y=mat_res$nbr_passager,col="green")
@@ -42,12 +43,15 @@ show_res <- function(mat_res, mark){
   legend("bottomright",legend=c("niveau de satisfaction", "nombre de passager"), col=c(2,3), lty=1)
 }
 
-show_res(mat_res = nautique_with_passager, mark = "frequentation nautique")
-show_res(mat_res = pieton_with_passager, mark = "frequentation pietonne")
-show_res(mat_res = remarque_with_passager, mark = "remarque")
+# show_res(mat_res = nautique_with_passager, mark = "frequentation nautique")
+# show_res(mat_res = pieton_with_passager, mark = "frequentation pietonne")
+# show_res(mat_res = remarque_with_passager, mark = "remarque")
 
 # Data without scale
 debarquement_passager_ss <- data.frame(date, debarquement$`nombre de passagers`)
+
 nautique_with_passager_ss <- merge(debarquement_passager_ss, sat_result_nautique, by="date")
 pieton_with_passager_ss <- merge(debarquement_passager_ss, sat_result_pieton, by="date")
 remarque_with_passager_ss <- merge(debarquement_passager_ss, sat_result_remarque, by="date")
+
+

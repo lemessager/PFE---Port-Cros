@@ -53,7 +53,7 @@ training_svm <- function () {
   score <- round(100*(1-(sum(prediction_error)/2)/length(prediction)))
   
   # Display the score
-  cat(paste("score:", score, "%", sep = " "))
+  #cat(paste("score:", score, "%", sep = " "))
 }
 
 
