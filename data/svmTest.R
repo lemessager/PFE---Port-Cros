@@ -93,7 +93,7 @@ for (i in 1:nrow(test_data)){
   L_months = test_data[i,2]
   L_passengers = test_data[i,3]
   L_satisfaction = test_data[i,4]
-  print(paste(" satisfaction (vraie calculée) ", L_satisfaction, "", capa_charge_test(L_day,L_months,L_satisfaction),sep="   "))
+  print(paste(" satisfaction (vraie:calculée) ", L_satisfaction, ":", capa_charge_test(L_day,L_months,L_satisfaction),sep=" "))
   L_erreur = abs(L_satisfaction - capa_charge_test(L_day,L_months,L_satisfaction))
   print(paste("erreur ",L_erreur))
 }
