@@ -15,6 +15,13 @@ library(e1071)
 ################### Testing the SVM  ############################
 #################################################################
 
+
+
+#suppresion sauvage des données à 0
+#solution provisoire à remplacer asap par une boucle
+pieton_with_passager_ss = pieton_with_passager_ss[21:95,]
+
+
 satisfaction_brut <- pieton_with_passager_ss$result
 nbr_passagers <- pieton_with_passager_ss$debarquement..nombre.de.passagers.
 days <- as.integer(substr(pieton_with_passager_ss$date,9,10))
@@ -79,9 +86,16 @@ capa_charge_test <- function(day, month, nbOfPassenger){
   return(result)
 }
 
-get_all_test_data <- function (day,month){
+
+for (i in 1:nrow(test_data)){
   
-  
+  L_day = test_data[i,1]
+  L_months = test_data[i,2]
+  L_passengers = test_data[i,3]
+  L_satisfaction = test_data[i,4]
+  print(paste(" satisfaction (vraie calculée) ", L_satisfaction, "", capa_charge_test(L_day,L_months,L_satisfaction),sep="   "))
+  L_erreur = abs(L_satisfaction - capa_charge_test(L_day,L_months,L_satisfaction))
+  print(paste("erreur ",L_erreur))
 }
 
 
