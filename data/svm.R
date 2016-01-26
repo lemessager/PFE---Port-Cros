@@ -12,9 +12,10 @@ library(e1071)
 ################### GENERAL STUFF SUCH AS LOADING DATA ############################
 
 
-#supressing data with zeros
-pieton_with_passager_ss <- pieton_with_passager[21:95,]
-
+#suppresion sauvage des données à 0
+#solution provisoire à remplacer asap par une boucle
+pieton_with_passager_ss = pieton_with_passager_ss[21:95,]
+  
 satisfaction <- pieton_with_passager_ss$result
 nbr_passagers <- pieton_with_passager_ss$debarquement..nombre.de.passagers.
 days <- as.integer(substr(pieton_with_passager_ss$date,9,10))
@@ -82,6 +83,6 @@ capa_charge <- function(day, month){
 
 
 training_svm();
-capa_charge(6,6);
+capa_charge(1,1);
 
 source("close_db_connections.R")
