@@ -87,6 +87,8 @@ capa_charge_test <- function(day, month, nbOfPassenger){
 }
 
 
+Error_Tab = c()
+
 for (i in 1:nrow(test_data)){
   
   L_day = test_data[i,1]
@@ -94,9 +96,12 @@ for (i in 1:nrow(test_data)){
   L_passengers = test_data[i,3]
   L_satisfaction = test_data[i,4]
   print(paste(" satisfaction (vraie:calculée) ", L_satisfaction, ":", capa_charge_test(L_day,L_months,L_satisfaction),sep=" "))
+  
+  
   L_erreur = abs(L_satisfaction - capa_charge_test(L_day,L_months,L_satisfaction))
   print(paste("erreur ",L_erreur))
+  Error_Tab= c(Error_Tab,L_erreur)
 }
-
+print(paste("erreur moyenne ",mean(Error_Tab)))
 
 source("close_db_connections.R")
