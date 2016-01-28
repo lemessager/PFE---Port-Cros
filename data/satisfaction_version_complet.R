@@ -17,7 +17,7 @@
 #      That is because the majority of visiters chose 'critique negative' for one criteria and 'pas de critiques' for the others.
 #      We can consider that the visitor gave their opinion on the management of park. So the result can be taken as positive.
 # Editor: ZHU Yuting
-# Version: 2015/11/30
+# Version: 2016/1/28
 #
 
 #####################################################################
@@ -25,6 +25,8 @@
 #####################################################################
 # Clear the console
 cat("\014") 
+options(scipen = 8)
+options(digits = 8)
 
 # Connection with the database
 source("readTable.R")
@@ -126,10 +128,36 @@ sat_result_remarque <- ddply(sat_remarque_with_date, .(date_remarque), summarize
 # plot(x = sat_result_nautique$date_nautique, y = sat_result_nautique$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Nautique", ylim=c(-1,1))
 # plot(x = sat_result_pieton$date_pieton, y = sat_result_pieton$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Pieton", ylim=c(-1,1))
 
-# For the interface
+
+# Part II 
+
+# We want to merge the result of "nautique" and "pieton" in order to analyze all the visitors together.
+# So we merge the two result tables and calculate the average satisfaction of each date.
+# At one date, if there are not any record of "nautique", the result is the number of satisfaction "pieton".
+# If there are two records, we calculate the average.
+# At the end, we obtain a table with numbers in [-1,1]
+
+
+# Preperation for merging the tables
 colnames(sat_result_remarque) <- c("date", "remarque")
 colnames(sat_result_pieton) <- c("date", "pieton")
 colnames(sat_result_nautique) <- c("date", "nautique")
 
-sat_result <- merge(sat_result_remarque, sat_result_nautique, all = T, by="date")
-sat_result <- merge(sat_result, sat_result_pieton, all = T, by = "date")
+# sat_result <- merge(sat_result_remarque, sat_result_nautique, all = T, by="date")
+sat_result <- merge(sat_result_nautique, sat_result_pieton, all = T, by = "date")
+
+# Calculate the average
+all_sat <- function(par_mat){
+  new_mat <- format(par_mat[,c(2,3)], scientific = F)
+#   num_all <- which(!is.na(new_mat[,1])&!is.na(new_mat[,2]))
+  new_mat[,1] <- round(as.numeric(unlist(new_mat[,1])), 8)
+  new_mat[,2] <- round(as.numeric(unlist(new_mat[,2])), 8)
+  new_mat[,3] <- apply(new_mat, 1, mean, na.rm = T)
+  res <- data.frame(par_mat[,1], new_mat)
+  colnames(res) <- c("date", "nautique", "pieton", "total")
+  return(res)
+}
+
+sat_result <- all_sat(par_mat = sat_result)
+sat_result_total <- sat_result[,c(1,4)]
+# plot(x = sat_result_pieton$date_pieton, y = sat_result_pieton$moyen, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction calcule de Frequentation Pieton", ylim=c(-1,1))

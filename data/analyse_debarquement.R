@@ -17,16 +17,27 @@ date <- substr(debarquement[,1],1,10)
 nbr_passager <- scale(debarquement[,2], center = T, scale = T)
 debarquement_passager <- data.frame(date, nbr_passager)
 
+# merge_table <- function(par_mat){
+#   col_name <- c("date", "result")
+#   colnames(par_mat) <- col_name
+#   res <- merge(debarquement_passager, par_mat, by = "date")
+#   return(res)
+# }
+
 col_name <- c("date", "result")
+
 colnames(sat_result_nautique) <- col_name
 colnames(sat_result_pieton) <- col_name
 colnames(sat_result_remarque) <- col_name
+colnames(sat_result_total) <- col_name
 
 # Merge the tables by date:
 # We only take in consideration the dates which have both number of passenger and number of satisfaction
 nautique_with_passager <- merge(debarquement_passager, sat_result_nautique, by="date")
 pieton_with_passager <- merge(debarquement_passager, sat_result_pieton, by="date")
 remarque_with_passager <- merge(debarquement_passager, sat_result_remarque, by="date")
+total_with_passager <- merge(debarquement_passager, sat_result_total, by="date")
+
 
 # Normalize the result of satisfaction in order to do a further analysis
 # nautique_with_passager$result <- scale(nautique_with_passager$result, center = T, scale = T)
