@@ -10,10 +10,11 @@ shinyServer(function(input, output){
   
   # TAB1 : Affichage des points de satisfaction 
   output$satPlot <- renderPlot({
-    result <- sat_result[,input$sat]
-    result <- data.frame(sat_result$date, result)
-    result <- result[-which(is.na(result$result)),]    
-    plot(x = result$sat_result.date, y = result$result, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction", ylim=c(-1,1))
+    result <- data.frame(sat_result$date, sat_result[,input$sat])
+    colnames(result) <- c("date", "result")
+    rows <- which(!is.na(result$result))
+    result <- result[rows,]    
+    plot(x = result$date, y = result$result, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction", ylim=c(-1,1))
   })
   
   # TAB2 : Affichage des liens entre la satisfaction et la frequentation

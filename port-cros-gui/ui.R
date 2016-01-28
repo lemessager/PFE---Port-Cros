@@ -10,7 +10,7 @@ shinyUI(navbarPage("Port-Cros GUI",
                      sidebarLayout(
                        sidebarPanel(
                          selectInput("sat", "Niveau de satisfaction",
-                                     choices = c("pieton","nautique","remarque")),
+                                     choices = c("nautique","pieton","total")),
                          hr(),
                          helpText("Donn??es des enqu??tes")
                        ),
@@ -27,7 +27,7 @@ shinyUI(navbarPage("Port-Cros GUI",
                      sidebarLayout(
                        sidebarPanel(
                          selectInput("nom", "Niveau de satisfaction en fonction de frequentation",
-                                     choices = c("pieton","nautique")),
+                                     choices = c("pieton","nautique","total")),
                          hr(),
                          helpText("Resultat apres l'analyse")
                        ),
@@ -36,6 +36,7 @@ shinyUI(navbarPage("Port-Cros GUI",
                        )
                      )
                    ),
+                   
                    
                    # TAB 3
                    tabPanel(
