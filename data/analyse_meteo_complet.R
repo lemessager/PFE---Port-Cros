@@ -1,6 +1,17 @@
 
+####################################################
+#
+# analyse_meteo.R avec critére d'évaluation de la meteo 
+# v0.0b
+#
+####################################################
+
 # Connection with the database
 source("analyse_debarquement.R")
+
+# temperature_min_acceptable <- 10
+# temperature_max_acceptable <- 30
+# temperature_min_acceptable <- 25
 
 # Consideration of two tables 'meteo' and 'debarquements_jour'
 meteo_db <- dbGetQuery(channel, "SELECT * FROM meteo;")

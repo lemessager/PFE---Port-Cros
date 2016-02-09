@@ -28,9 +28,12 @@ training_data <- data.frame(days,months,nbr_passagers)
 colnames(training_data) <- c("days","months","nbr_passagers")
 
 # Creating 2 labels: one for unsatisfaction, the other for satisfaction
-satisfaction[satisfaction <= 0] <- -1
-satisfaction[satisfaction > 0] <- 1
+#satisfaction[satisfaction <= 0.2] <- 0
+#satisfaction[satisfaction > 0.2] <- 1
 
+# satisfaction[satisfaction < 0] <- -1
+# satisfaction[satisfaction >= 0 & satisfaction < 0.2] <- 0
+# satisfaction[satisfaction >= 0.2] <- 1
 
 
 ################### TRAINING FUNCTION ############################
@@ -44,6 +47,7 @@ training_svm <- function () {
   prediction <- predict(model, training_data)
   
   # If the predicted value is negative or 0, then it's -1 otherwise it's 1
+  
   prediction[prediction <= 0] <- -1
   prediction[prediction > 0] <- 1
   
@@ -54,7 +58,7 @@ training_svm <- function () {
   score <- round(100*(1-(sum(prediction_error)/2)/length(prediction)))
   
   # Display the score
-  #cat(paste("score:", score, "%", sep = " "))
+  cat(paste("score:", score, "%", sep = " "))
 }
 
 
@@ -73,8 +77,9 @@ capa_charge <- function(day, month){
     #incProgress(1/2000, detail = paste(trunc(100*i/2000)," %"))
   }
   
-  #result[result <= 0] <- -1
-  #result[result > 0] <- 1
+#   result[result < 0] <- -1
+#   result[result >= 0 & result < 0.2] <- 0
+#   result[result >= 0.2] <- 1
   plot(result,xlab="Number of passengers", ylab="Satisfaction")
   abline(h = 0, col = "red")
   title(paste("Prediction of the satisfaction for the",day,"/", month))
@@ -83,6 +88,6 @@ capa_charge <- function(day, month){
 
 
 training_svm();
-capa_charge(1,1);
+capa_charge(15,07);
 
 source("close_db_connections.R")
