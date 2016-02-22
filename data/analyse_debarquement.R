@@ -9,34 +9,28 @@
 source("satisfaction_version_complet.R")
 
 # Consideration of the tables 'debarquement'
-debarquement <- dbGetQuery(channel, "SELECT * FROM debarquements_journaliers")
+.debarquement <- dbGetQuery(channel, "SELECT * FROM debarquements_journaliers")
 
 # Preparation for merge the tables and Normalize the number of passenger
-debarquement <- debarquement[-1]
-date <- substr(debarquement[,1],1,10)
-nbr_passager <- scale(debarquement[,2], center = T, scale = T)
-debarquement_passager <- data.frame(date, nbr_passager)
+.debarquement <- .debarquement[-1]
+.date <- substr(.debarquement[,1],1,10)
+.nbr_passager <- scale(.debarquement[,2], center = T, scale = T)
+.debarquement_passager <- data.frame(.date, .nbr_passager)
 
-# merge_table <- function(par_mat){
-#   col_name <- c("date", "result")
-#   colnames(par_mat) <- col_name
-#   res <- merge(debarquement_passager, par_mat, by = "date")
-#   return(res)
-# }
+.col_name <- c("date", "result")
 
-col_name <- c("date", "result")
-
-colnames(sat_result_nautique) <- col_name
-colnames(sat_result_pieton) <- col_name
-colnames(sat_result_remarque) <- col_name
-colnames(sat_result_total) <- col_name
+colnames(.debarquement_passager) <- c("date", "nbr_passager")
+colnames(.sat_result_nautique) <- .col_name
+colnames(.sat_result_pieton) <- .col_name
+colnames(.sat_result_remarque) <- .col_name
+colnames(sat_result_total) <- .col_name
 
 # Merge the tables by date:
 # We only take in consideration the dates which have both number of passenger and number of satisfaction
-nautique_with_passager <- merge(debarquement_passager, sat_result_nautique, by="date")
-pieton_with_passager <- merge(debarquement_passager, sat_result_pieton, by="date")
-remarque_with_passager <- merge(debarquement_passager, sat_result_remarque, by="date")
-total_with_passager <- merge(debarquement_passager, sat_result_total, by="date")
+nautique_with_passager <- merge(.debarquement_passager, .sat_result_nautique, by='date')
+pieton_with_passager <- merge(.debarquement_passager, .sat_result_pieton, by="date")
+remarque_with_passager <- merge(.debarquement_passager, .sat_result_remarque, by="date")
+total_with_passager <- merge(.debarquement_passager, sat_result_total, by="date")
 
 
 # Normalize the result of satisfaction in order to do a further analysis
@@ -54,15 +48,13 @@ show_res <- function(mat_res, mark){
   legend("bottomright",legend=c("niveau de satisfaction", "nombre de passager"), col=c(2,3), lty=1)
 }
 
-# show_res(mat_res = nautique_with_passager, mark = "frequentation nautique")
-# show_res(mat_res = pieton_with_passager, mark = "frequentation pietonne")
-# show_res(mat_res = remarque_with_passager, mark = "remarque")
 
 # Data without scale
-debarquement_passager_ss <- data.frame(date, debarquement$`nombre de passagers`)
+debarquement_passager_ss <- data.frame(.date, .debarquement$`nombre de passagers`)
+colnames(debarquement_passager_ss) <- c("date", "debarquement..nombre.de.passagers.")
 
-nautique_with_passager_ss <- merge(debarquement_passager_ss, sat_result_nautique, by="date")
-pieton_with_passager_ss <- merge(debarquement_passager_ss, sat_result_pieton, by="date")
-remarque_with_passager_ss <- merge(debarquement_passager_ss, sat_result_remarque, by="date")
+nautique_with_passager_ss <- merge(debarquement_passager_ss, .sat_result_nautique, by="date")
+pieton_with_passager_ss <- merge(debarquement_passager_ss, .sat_result_pieton, by="date")
+remarque_with_passager_ss <- merge(debarquement_passager_ss, .sat_result_remarque, by="date")
 
 
