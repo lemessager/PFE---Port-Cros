@@ -98,8 +98,6 @@ shinyUI(
         
         mainPanel(plotOutput("metPlot"))
       )
-    )
-    
-    
+    )    
   )
 )

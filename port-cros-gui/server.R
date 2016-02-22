@@ -95,6 +95,5 @@ shinyServer(function(input, output) {
         )
       }
     }
-    
   })
 })
