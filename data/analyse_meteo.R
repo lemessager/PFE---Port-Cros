@@ -3,34 +3,24 @@
 source("analyse_debarquement.R")
 
 # Consideration of two tables 'meteo' and 'debarquements_jour'
-meteo_db <- dbGetQuery(channel, "SELECT * FROM meteo;")
+.meteo_db <- dbGetQuery(channel, "SELECT * FROM meteo;")
 
-meteo <- meteo_db[,-1]
-date <- substr(meteo[,1],1,10)
-meteo <- meteo[,-1]
-moyen_tem <- (meteo[,3]+meteo[,4])/2
-meteo <- data.frame(date, meteo[-c(3,4)], moyen_tem)
+.meteo <- .meteo_db[,-1]
+.date_meteo <- substr(.meteo[,1],1,10)
+.meteo <- .meteo[,-1]
+.moyen_tem <- (.meteo[,3]+.meteo[,4])/2
+.meteo <- data.frame(.date_meteo, .meteo[-c(3,4)], .moyen_tem)
 
-date <- substr(debarquement[,1],1,10)
-nbr_passager <- debarquement[,2]
-debarquement_passager <- data.frame(date, nbr_passager)
+colnames(.meteo) <- c("date", "pluie", "pluie_neige", "ev_piche", "moyen_tem")
+.meteo_passager <- merge(.meteo, .debarquement_passager, by="date")
+# plot(.meteo_passager$pluie, .meteo_passager$nbr_passager, xlab = "pluie", ylab = "nombre de passager", main = "Relation entre la plue et le nombre de passager")
+# plot(.meteo_passager$pluie_neige, .meteo_passager$nbr_passager, xlab = "pluie neige", ylab = "nombre de passager", main = "Relation entre la plue neige et le nombre de passager")
+# plot(.meteo_passager$ev_piche, .meteo_passager$nbr_passager, xlab = "ev_piche", ylab = "nombre de passager", main = "Relation entre l'ev_piche et le nombre de passager")
+# plot(.meteo_passager$moyen_tem, .meteo_passager$nbr_passager, xlab = "temperature", ylab = "nombre de passager", main = "Relation entre le temperature et le nombre de passager")
 
-meteo_passager <- merge(meteo, debarquement_passager, by="date")
-plot(meteo_passager$PLUIE, meteo_passager$nbr_passager, xlab = "pluie", ylab = "nombre de passager", main = "Relation entre la plue et le nombre de passager")
-plot(meteo_passager$PLUIE_NEIGE, meteo_passager$nbr_passager, xlab = "pluie neige", ylab = "nombre de passager", main = "Relation entre la plue neige et le nombre de passager")
-plot(meteo_passager$EV_PICHE, meteo_passager$nbr_passager, xlab = "ev_piche", ylab = "nombre de passager", main = "Relation entre l'ev_piche et le nombre de passager")
-plot(meteo_passager$moyen_tem, meteo_passager$nbr_passager, xlab = "temperature", ylab = "nombre de passager", main = "Relation entre le temperature et le nombre de passager")
-
-col_names <- c("date", "result")
-colnames(sat_result_nautique) <- col_names
-colnames(sat_result_pieton) <- col_names
-colnames(sat_result_remarque) <- col_names
-
-meteo_sat_nautique <- merge(meteo, sat_result_nautique, by="date")
-meteo_sat_pieton <- merge(meteo, sat_result_pieton, by="date")
-meteo_sat_remarque <- merge(meteo, sat_result_remarque, by="date")
-
-###### Problem !!!!
+.meteo_sat_nautique <- merge(.meteo, .sat_result_nautique, by="date")
+.meteo_sat_pieton <- merge(.meteo, .sat_result_pieton, by="date")
+.meteo_sat_remarque <- merge(.meteo, .sat_result_remarque, by="date")
 
 show_sat_meteo <- function(sat_mat, mark){
   date_ <- sat_mat[,1]
@@ -49,6 +39,6 @@ show_sat_meteo <- function(sat_mat, mark){
   legend("bottomright",legend=c("pluie", "pluie neige", "ev_piche", "temp"), col=c("red", "green", "blue","yellow"), pch=c(1,2,3,4))
 }
 
-show_sat_meteo(sat_mat = meteo_sat_nautique, mark = "nautique")
-show_sat_meteo(sat_mat = meteo_sat_pieton, mark = "pietonne")
-show_sat_meteo(sat_mat = meteo_sat_remarque, mark = "remarque")
+# show_sat_meteo(sat_mat = .meteo_sat_nautique, mark = "nautique")
+# show_sat_meteo(sat_mat = .meteo_sat_pieton, mark = "pietonne")
+# show_sat_meteo(sat_mat = .meteo_sat_remarque, mark = "remarque")
