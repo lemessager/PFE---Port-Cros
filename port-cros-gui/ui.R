@@ -66,4 +66,29 @@ shinyUI(navbarPage("Port-Cros GUI",
                      )
                    ),
                    
+<<<<<<< HEAD
          ))
+=======
+                   # TAB 4
+                   tabPanel(
+                     "Visualistion donn??es satisfaction / meteo",
+                     
+                     sidebarLayout(
+                       sidebarPanel(
+                         selectInput("met", "Niveau de satisfaction ",
+                                     choices = c("pieton","nautique")),
+                         selectInput("para", "en fonction de", choices = c("pluie", "pluie_neige", "ev_piche", "moyen_temperature", "total")),
+                         checkboxInput("check", strong("x-axe : date"), value = TRUE),
+                         hr(),
+                         helpText("Resultat apres l'analyse")
+                       ),
+
+                       mainPanel(
+                         plotOutput("metPlot")
+                       )
+                     )
+                   )
+                   
+                   
+))
+>>>>>>> origin/master

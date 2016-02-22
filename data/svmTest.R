@@ -21,8 +21,8 @@ library(e1071)
 #solution provisoire à remplacer asap par une boucle
 pieton_with_passager_ss = pieton_with_passager_ss[21:95,]
 
-
 satisfaction_brut <- pieton_with_passager_ss$result
+satisfaction <- satisfaction_brut
 nbr_passagers <- pieton_with_passager_ss$debarquement..nombre.de.passagers.
 days <- as.integer(substr(pieton_with_passager_ss$date,9,10))
 months <- as.integer(substr(pieton_with_passager_ss$date,6,7))
@@ -35,8 +35,8 @@ full_data_results <- cbind(full_data,satisfaction_brut)
 colnames(training_data) <- c("days","months","nbr_passagers")
 
 # Creating 2 labels: one for unsatisfaction, the other for satisfaction
-satisfaction[satisfaction_brut <= 0] <- -1
-satisfaction[satisfaction_brut > 0] <- 1
+# satisfaction[satisfaction_brut <= 0] <- -1
+# satisfaction[satisfaction_brut > 0] <- 1
 
 full_data_dec = dim(full_data)[1]/10;
 
@@ -87,6 +87,8 @@ capa_charge_test <- function(day, month, nbOfPassenger){
 }
 
 
+Error_Tab = c()
+
 for (i in 1:nrow(test_data)){
   
   L_day = test_data[i,1]
@@ -94,9 +96,13 @@ for (i in 1:nrow(test_data)){
   L_passengers = test_data[i,3]
   L_satisfaction = test_data[i,4]
   print(paste(" satisfaction (vraie:calculée) ", L_satisfaction, ":", capa_charge_test(L_day,L_months,L_satisfaction),sep=" "))
+  
+  
   L_erreur = abs(L_satisfaction - capa_charge_test(L_day,L_months,L_satisfaction))
   print(paste("erreur ",L_erreur))
+  Error_Tab= c(Error_Tab,L_erreur)
 }
-
+print(paste("erreur moyenne ",mean(Error_Tab)))
+print(paste("erreur moyenne ",abs(2-mean(Error_Tab)*100),"%"))
 
 source("close_db_connections.R")

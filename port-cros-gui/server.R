@@ -3,8 +3,8 @@ library(shiny)
 shinyServer(function(input, output){
   
   setwd("../data/")
-  source("analyse_debarquement.R")
   source("svm.R")
+  source("analyse_meteo.R")
   
   training_svm()
   
@@ -44,6 +44,28 @@ shinyServer(function(input, output){
     })
   })
   
+<<<<<<< HEAD
 
+=======
+  # TAB 4 : Analyse de meteo
+  output$metPlot <- renderPlot({
+    
+    eval(parse(text = paste(
+      "meteo_result <- .meteo_sat_",input$met,sep = ""
+    )))
+    if(input$check){
+      if(input$para == "total"){
+        show_sat_meteo(sat_mat = meteo_result, mark = input$met)
+      }else{
+        show_det_meteo(sat_mat = meteo_result, mark = input$met, detail = input$para)
+      }
+    }else{
+      if(input$para != "total"){
+        show_res_meteo(sat_mat = meteo_result, mark = input$met, detail = input$para)
+      }
+    }
+    
+    })
+>>>>>>> origin/master
 })
   
