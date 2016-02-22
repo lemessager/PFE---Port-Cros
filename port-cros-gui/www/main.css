@@ -1,9 +1,19 @@
-.block1
+#dailyMean
 {
-	background-color: red;
+	color: red;
 }
 
-.block2
+#monthlyMean
 {
-	background-color: blue;
+	color: green;
+}
+
+#globalMean
+{
+	color: blue;
+}
+
+#maxPass
+{
+  color: gray;
 }
