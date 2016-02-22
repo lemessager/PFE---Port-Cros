@@ -51,9 +51,17 @@ init_svm <- function() {
   max_passengers <<- 2000
 }
 
+# Compute several means about satisfaction
 compute_sat_mean <- function() {
+  # Init the satisfaction as a matrix (size 31 days and 12 months)
   sat_mean <<- matrix(numeric(1), nrow = 31, ncol = 12)
+  
+  # Append data and satisfaction
   big_matrix <<- data.frame(training_data, satisfaction)
+  
+  # Iterate for each day of year
+  # We compute the mean of the satisfaction per day
+  # If the mean is defined we keep it
   for (i in 1:31) {
     for (j in 1:12) {
       tmp = mean(subset(big_matrix[,4], big_matrix[,1] == i &
@@ -63,8 +71,14 @@ compute_sat_mean <- function() {
       }
     }
   }
+  
+  # We put NA value for each 0 (because 0 is not very representative for mean computation)
   sat_mean[sat_mean == 0] <<- NA
+  
+  # We compute the mean for each month
   sat_mean_by_month <<- colMeans(sat_mean, na.rm = TRUE)
+  
+  # We compute the global mean
   sat_mean_global <<- mean(sat_mean_by_month, na.rm = TRUE)
 }
 
