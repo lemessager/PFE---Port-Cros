@@ -1,55 +1,58 @@
-# Clear the console
-cat("\014")
+####################   Script for SVM training and prediction   ###############
+###
+###       METHODS:  load_data()
+###                 init_svm()
+###                 train_svm()
+###                 capa_charge(day,month)
+###                 close_db_connections()
+###
+###############################################################################
 
-#package "svm" :
-#install.packages('e1071', dependencies = TRUE)
+# Load the data from other scripts
+# Load the library for SVM
+load_data <- function(){
+  source("satisfaction_version_complet.R")
+  source("analyse_debarquement.R")
+  library(e1071)
+}
 
-source("satisfaction_version_complet.R")
-source("analyse_debarquement.R")
-
-library(e1071)
-
-################### GENERAL STUFF SUCH AS LOADING DATA ############################
-
-
-#suppresion sauvage des données à 0
-#solution provisoire à remplacer asap par une boucle
-pieton_with_passager_ss = pieton_with_passager_ss[21:95,]
+# Format the data in order to fit our SVM model
+init_svm <- function(){
+  # Deleting data where satisfaction is null
+  pieton_with_passager_ss <- pieton_with_passager_ss[pieton_with_passager_ss$result != 0,]
   
-satisfaction <- pieton_with_passager_ss$result
-nbr_passagers <- pieton_with_passager_ss$debarquement..nombre.de.passagers.
-days <- as.integer(substr(pieton_with_passager_ss$date,9,10))
-months <- as.integer(substr(pieton_with_passager_ss$date,6,7))
+  # Load satisfaction from data
+  satisfaction <<- pieton_with_passager_ss$result
+  
+  # Load nbr of passengers from data
+  nbr_passagers <- pieton_with_passager_ss$debarquement..nombre.de.passagers.
+  
+  # Load days from data
+  days <- as.integer(substr(pieton_with_passager_ss$date,9,10))
+  
+  # Load months from data
+  months <- as.integer(substr(pieton_with_passager_ss$date,6,7))
+  
+  # Create a data matrix from the extracted days, months and number of passengers
+  training_data <<- data.frame(days,months,nbr_passagers)
+  
+  # Give name to the columns of the previously created matrix
+  colnames(training_data) <- c("days","months","nbr_passagers")
+  
+  # Computing the satisfaction mean
+  sat_mean <<- mean(satisfaction)
+  
+  # The maximum number of passengers for SVM training and prediction
+  max_passengers <<- 2000
+}
 
-training_data <- data.frame(days,months,nbr_passagers)
-
-
-
-colnames(training_data) <- c("days","months","nbr_passagers")
-
-# Creating 2 labels: one for unsatisfaction, the other for satisfaction
-#satisfaction[satisfaction <= 0.2] <- 0
-#satisfaction[satisfaction > 0.2] <- 1
-
-# satisfaction[satisfaction < 0] <- -1
-# satisfaction[satisfaction >= 0 & satisfaction < 0.2] <- 0
-# satisfaction[satisfaction >= 0.2] <- 1
-
-
-################### TRAINING FUNCTION ############################
-
-training_svm <- function () {
+# Train the SVM model
+train_svm <- function () {
   # Training SVM
   model <<- svm(training_data, satisfaction)
-  # HINT: subset(x, select = c(columns to choose))
   
-  # Prediction
+  # Prediction on training dataset
   prediction <- predict(model, training_data)
-  
-  # If the predicted value is negative or 0, then it's -1 otherwise it's 1
-  
-  prediction[prediction <= 0] <- -1
-  prediction[prediction > 0] <- 1
   
   # Comparison between predicted values and real values
   prediction_error <- abs(prediction - satisfaction)
@@ -61,33 +64,64 @@ training_svm <- function () {
   cat(paste("score:", score, "%", sep = " "))
 }
 
-
-
-################### PREDICT FUNCTION ############################
-
-
+# SVM prediction given a date
 capa_charge <- function(day, month){
   # Init
   result <- 0
-  # We predict the satisfaction for every possible passengers values between 1 and 2000
-  for(i in 1:2000) 
-  {
+  
+  # We predict the satisfaction for every possible passengers values between 1 and max_passengers
+  for(i in 1:max_passengers){
     B = matrix(c(day,month,i), nrow=1, ncol=3)
     result[i] <- predict(model,B)
-    #incProgress(1/2000, detail = paste(trunc(100*i/2000)," %"))
+    
+    # For Shiny App displaying the progress of the prediction
+    #incProgress(1/max_passengers, detail = paste(trunc(100*i/max_passengers)," %"))
   }
   
-#   result[result < 0] <- -1
-#   result[result >= 0 & result < 0.2] <- 0
-#   result[result >= 0.2] <- 1
-  plot(result,xlab="Number of passengers", ylab="Satisfaction")
-  abline(h = 0, col = "red")
+  # Displaying the result
+  plot(result,type = "p", xlab="Number of passengers", ylab="Satisfaction")
+  
+  # Drawing the 0 line (actually corresponds to the mean)
+  abline(h = sat_mean, col = "red")
+  
+  # Some title
   title(paste("Prediction of the satisfaction for the",day,"/", month))
+  
+  # Returning the result object for further use
   return(result)
 }
 
+# Close the connection with the DB
+close_db_connections <- function(){
+  source("close_db_connections.R")
+}
 
-training_svm();
-capa_charge(15,07);
+# MAIN TRAINING FUNCTION
+run_svm_training <- function(){
+  load_data()
+  init_svm()
+  train_svm()
+  close_db_connections()
+}
 
-source("close_db_connections.R")
+# MAIN PREDICTION FUNCTION
+run_svm_prediction <- function(day, month){
+  # We run the prediction function and store
+  my_result <- capa_charge(day, month)
+  
+  # We initialize the crossing_mean vector
+  crossing_mean <- character(0)
+  
+  # We take the max_passengers minus one
+  max_pass_minus_one <- max_passengers - 1
+  
+  # We go through the result and check for values that cross the mean
+  for(i in 1:max_pass_minus_one){
+    if(my_result[i] >= sat_mean && my_result[i+1] < sat_mean){
+      crossing_mean <- c(crossing_mean, i)
+    }
+  }
+  
+  # Drawing vertical lines when we cross the mean
+  abline(v = crossing_mean, col = "blue")
+}
