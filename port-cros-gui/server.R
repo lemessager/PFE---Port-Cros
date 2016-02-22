@@ -4,6 +4,7 @@ shinyServer(function(input, output){
   
   setwd("../data/")
   source("svm.R")
+  source("analyse_meteo.R")
   
   training_svm()
   
@@ -43,5 +44,11 @@ shinyServer(function(input, output){
     })
   })
   
+  # TAB 4 : Analyse de meteo
+  output$metPlot <- renderPlot({
+    eval(parse(text = paste(
+      "meteo_result <- .meteo_sat_",input$met,sep = ""
+    )))
+    show_sat_meteo(sat_mat = meteo_result, mark = input$met)  })
 })
   
