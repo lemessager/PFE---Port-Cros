@@ -3,7 +3,6 @@ library(shiny)
 shinyServer(function(input, output){
   
   setwd("../data/")
-  source("analyse_debarquement.R")
   source("svm.R")
   
   training_svm()
@@ -44,13 +43,5 @@ shinyServer(function(input, output){
     })
   })
   
-  # TAB 4 : ???
-  output$disPlot <- renderPlot({
-    
-  
-    colm <- as.numeric(input$deb)
-    hist(iris[,colm], breaks=seq(0,max(iris[,colm], l=input$jour)))   
-    
-})
 })
   

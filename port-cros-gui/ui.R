@@ -64,30 +64,7 @@ shinyUI(navbarPage("Port-Cros GUI",
                          plotOutput("svmPlot")
                        )
                      )
-                   ),
-                   
-                   #TAB 4
-                   tabPanel("Analyse Debarquement !",
-                   sidebarLayout(
-                     sidebarPanel(
-                       selectInput("deb","select the month", choices = c("Janvier"=1,"Fevrier"=2,"Mars"=3,"Avril"=4,"Mai"=5,"Juin"=6,"Juillet"=7,"Aout"=8,"Septembre"=9,"Octobre"=10,"Novembre"=11,"Decembre"=12)),
-                       br(),
-                       sliderInput("jour","Select the day for histogram",min = 1,max = 31,value = 1),
-                       
-                       
-                       br(),
-                       radioButtons("color","Select the color of histogram", choices = c("Green","Yellow","Red"),selected = "Green"),
-                       
-                       
-                       
-                       h6(" Powered by: "),
-                       tags$img(src='RStudio-Ball.png', height=50, width=50),
-                       tags$style("body{background-color:linen; color:brown}")
-                     ),
-                     mainPanel(
-                       plotOutput("disPlot")
-                     )
                    )
                    
                    
-)))
+))
