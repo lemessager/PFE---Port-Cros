@@ -32,114 +32,146 @@ options(digits = 8)
 source("readTable.R")
 channel =  readMyTable(); 
 
-# Consideration of two tables 'frequentation'
-.frequentation_nautique <- dbGetQuery(channel, "SELECT * FROM enquete_frequentation_nautique")
-.frequentation_pietonne <- dbGetQuery(channel, "SELECT * FROM enquete_frequentation_pietonne")
-.remarque <- dbGetQuery(channel, "SELECT * FROM remarques")
+do_data <- function(){
+  
+  # Consideration of two tables 'frequentation'
+  .frequentation_nautique <- dbGetQuery(channel, "SELECT * FROM enquete_frequentation_nautique")
+  .frequentation_pietonne <- dbGetQuery(channel, "SELECT * FROM enquete_frequentation_pietonne")
+  .remarque <- dbGetQuery(channel, "SELECT * FROM remarques")
+  .gestion <- dbGetQuery(channel, "SELECT * FROM enquete_gestion")
+  
+  # Delete the first column
+  .frequentation_pietonne <- .frequentation_pietonne[-1]
+  .frequentation_nautique <- .frequentation_nautique[-1]
+  .remarque <- .remarque[-1]
+  .gestion <- .gestion[-1]
+  
+  # Extraction of the columns that signify the satisfaction degree
+  .date_nautique <- substr(.frequentation_nautique[,1],1,10)
+  .date_pieton <- substr(.frequentation_pietonne[,1],1,10)
+  .date_remarque <- substr(.remarque[,1],1,10)
+  .date_gestion <- substr(.gestion[,1],1,10)
+  
+  # Neglect of 'null', 'NA' and 'no result'
+  .satisfait_nautique <- .frequentation_nautique[c(3,5,6,7,18)]%%5
+  .derangeant_nautique <- .frequentation_nautique[c(8,9,11,12,15,16)]%%5
 
-# Delete the first column
-.frequentation_pietonne <- .frequentation_pietonne[-1]
-.frequentation_nautique <- .frequentation_nautique[-1]
-.remarque <- .remarque[-1]
+  .satisfait_pieton <- .frequentation_pietonne[c(2,3,5,6,17)]%%5
+  .derangeant_pieton <- .frequentation_pietonne[c(7,9,10,12:15)]%%5
 
-# Extraction of the columns that signify the satisfaction degree
-.date_nautique <- substr(.frequentation_nautique[,1],1,10)
-.date_pieton <- substr(.frequentation_pietonne[,1],1,10)
-.date_remarque <- substr(.remarque[,1],1,10)
+  .satisfait_remarque <- .remarque[c(5:23,26:30)]%%3
+  .derangeant_remarque <- .remarque[c(24,25)]%%4
+  
+  # Add new criteriers for calculating the satisfaction
 
-# Neglect of 'null', 'NA' and 'no result'
-.satisfait_nautique <- .frequentation_nautique[c(3,5,6,7,18)]%%5
-.derangeant_nautique <- .frequentation_nautique[c(8,9,11,12,15,16)]%%5
-.satisfait_pieton <- .frequentation_pietonne[c(2,3,5,6,17)]%%5
-.derangeant_pieton <- .frequentation_pietonne[c(7,9,10,12:15)]%%5
-.satisfait_remarque <- .remarque[c(5:23,26:30)]%%3
-.derangeant_remarque <- .remarque[c(24,25)]%%4
+  # information 1: bien diffuse 2->-1 peu accessible
+  .satisfait_gestion_1 <- .gestion[c(3)]%%3
+  .satisfait_gestion_1[.satisfait_gestion_1==2] <- -1
+  
+  # limitation de poubelle / limitation de sanitaire / interdiction de fumer / regulation
+  # 1: justifie 2->-1 trop contraignant 3/4->0 pas d'avis
+  .satisfait_gestion_2 <- .gestion[c(9,10,11,17)]%%4
+  .satisfait_gestion_2 <- .satisfait_gestion_2%%3
+  .satisfait_gestion_2[.satisfait_gestion_2==2] <- -1
+  
+  .satisfait_gestion <- cbind(.satisfait_gestion_1, .satisfait_gestion_2)
 
-#####################################################################
-####################  Operation on the data  ########################
-#####################################################################
+  #####################################################################
+  ####################  Operation on the data  ########################
+  #####################################################################
 
-# Calculate the number of non-zero and non-NA values in every row
-cal_na <- function(sat_der){
-  res <- length(which(!is.na(sat_der)&sat_der!=0))
-  return(res) 
+  # Calculate the number of non-zero and non-NA values in every row
+  cal_na <- function(sat_der){
+    res <- length(which(!is.na(sat_der)&sat_der!=0))
+    return(res) 
+  }
+
+  # Normalise the data
+  sat_cal <- function(sat_der, mark_val){
+    num_vec <- apply(sat_der,1,cal_na)
+    cal_vec <- 1./(num_vec*mark_val)
+    sat_der[is.na(sat_der)]<-0
+    cal_vec[is.infinite(cal_vec)]<-0
+    res <- cal_vec*sat_der
+    return(res)
+  }
+  
+  # Positive mark signifies a greater satisfaction
+  .satisfait_nautique <- sat_cal(sat_der = .satisfait_nautique, mark_val = 4)
+  .derangeant_nautique <- sat_cal(sat_der = .derangeant_nautique, mark_val = -4)
+  
+  .satisfait_pieton <- sat_cal(sat_der = .satisfait_pieton, mark_val = 4)
+  .derangeant_pieton <- sat_cal(sat_der = .derangeant_pieton, mark_val = -4)
+
+  .satisfait_remarque <- sat_cal(sat_der = .satisfait_remarque, mark_val = 2)
+  .derangeant_remarque <- sat_cal(sat_der = .derangeant_remarque, mark_val = -3)
+  
+  .satisfait_gestion <- sat_cal(sat_der = .satisfait_gestion, mark_val = 1)
+
+  # Regroup the data and calculate the final result
+  .sat_nautique <- cbind(.satisfait_nautique, .derangeant_nautique)
+  .nautique_final <- as.matrix(rowSums(.sat_nautique, na.rm = T))
+
+  .sat_pieton <- cbind(.satisfait_pieton, .derangeant_pieton)
+  .pieton_final <- as.matrix(rowSums(.sat_pieton, na.rm = T))
+
+  .sat_remarque <- cbind(.satisfait_remarque, .derangeant_remarque)
+  .remarque_final <- as.matrix(rowSums(.sat_remarque, na.rm = T))
+
+  .sat_gestion <- as.matrix(rowSums(.satisfait_gestion, na.rm = T))
+  # Regroup with date for a further step
+  .sat_nautique_with_date <- data.frame(cbind(.date_nautique, .nautique_final))
+  .sat_pieton_with_date <- data.frame(cbind(.date_pieton, .pieton_final))
+  .sat_remarque_with_date <- data.frame(cbind(.date_remarque, .remarque_final))
+  .sat_gestion_with_date <- data.frame(cbind(.date_gestion, .sat_gestion))
+
+  #####################################################################
+  #####################  Analyse of the data  #########################
+  #####################################################################
+
+  # install.packages("plyr")
+  library("plyr")
+  
+  # Regroup the data by date and calculate the average
+  .sat_result_nautique <<- ddply(.sat_nautique_with_date, .(.date_nautique), summarize, moyen=-mean(as.numeric(levels(V2))[V2]))
+  .sat_result_pieton <<- ddply(.sat_pieton_with_date, .(.date_pieton), summarize, moyen=-mean(as.numeric(levels(V2))[V2]))
+  .sat_result_remarque <<- ddply(.sat_remarque_with_date, .(.date_remarque), summarize, moyen=-mean(as.numeric(levels(V2))[V2]))
+  .sat_result_gestion <<- ddply(.sat_gestion_with_date, .(.date_gestion), summarize, moyen=mean(as.numeric(levels(V2))[V2]))
+
+  # Part II 
+  
+  # We want to merge the result of "nautique" and "pieton" in order to analyze all the visitors together.
+  # So we merge the two result tables and calculate the average satisfaction of each date.
+  # At one date, if there are not any record of "nautique", the result is the number of satisfaction "pieton".
+  # If there are two records, we calculate the average.
+  # At the end, we obtain a table with numbers in [-1,1]
+  
+
+  # Preperation for merging the tables
+  colnames(.sat_result_remarque) <<- c("date", "remarque")
+  colnames(.sat_result_pieton) <<- c("date", "pieton")
+  colnames(.sat_result_nautique) <<- c("date", "nautique")
+  colnames(.sat_result_gestion) <<- c("date", "gestion")
+  
+  # sat_result <- merge(sat_result_remarque, sat_result_nautique, all = T, by="date")
+  sat_result <<- merge(.sat_result_nautique, .sat_result_pieton, all = T, by = "date")
+  sat_result <<- merge(sat_result, .sat_result_gestion, all = T, by = "date")
+
+  # Calculate the average
+  all_sat <- function(par_mat){
+    new_mat <- format(par_mat[,c(2,3,4)], scientific = F)
+  #   num_all <- which(!is.na(new_mat[,1])&!is.na(new_mat[,2]))
+    new_mat[,1] <- round(as.numeric(unlist(new_mat[,1])), 8)
+    new_mat[,2] <- round(as.numeric(unlist(new_mat[,2])), 8)
+    new_mat[,3] <- round(as.numeric(unlist(new_mat[,3])), 8)
+    new_mat[,4] <- apply(new_mat, 1, mean, na.rm = T)
+    res <- data.frame(par_mat[,1], new_mat)
+    colnames(res) <- c("date", "nautique", "pieton", "gestion", "total")
+    return(res)
+  }
+
+  sat_result <<- all_sat(par_mat = sat_result)
+  sat_result_total <<- sat_result[,c(1,5)]
 }
 
-# Normalise the data
-sat_cal <- function(sat_der, mark_val){
-  num_vec <- apply(sat_der,1,cal_na)
-  cal_vec <- 1./(num_vec*mark_val)
-  sat_der[is.na(sat_der)]<-0
-  cal_vec[is.infinite(cal_vec)]<-0
-  res <- cal_vec*sat_der
-  return(res)
-}
-
-# Positive mark signifies a greater satisfaction
-.satisfait_nautique <- sat_cal(sat_der = .satisfait_nautique, mark_val = 4)
-.derangeant_nautique <- sat_cal(sat_der = .derangeant_nautique, mark_val = -4)
-
-.satisfait_pieton <- sat_cal(sat_der = .satisfait_pieton, mark_val = 4)
-.derangeant_pieton <- sat_cal(sat_der = .derangeant_pieton, mark_val = -4)
-
-.satisfait_remarque <- sat_cal(sat_der = .satisfait_remarque, mark_val = 2)
-.derangeant_remarque <- sat_cal(sat_der = .derangeant_remarque, mark_val = -3)
-
-# Regroup the data and calculate the final result
-.sat_nautique <- cbind(.satisfait_nautique, .derangeant_nautique)
-.nautique_final <- as.matrix(rowSums(.sat_nautique, na.rm = T))
-
-.sat_pieton <- cbind(.satisfait_pieton, .derangeant_pieton)
-.pieton_final <- as.matrix(rowSums(.sat_pieton, na.rm = T))
-
-.sat_remarque <- cbind(.satisfait_remarque, .derangeant_remarque)
-.remarque_final <- as.matrix(rowSums(.sat_remarque, na.rm = T))
-
-# Regroup with date for a further step
-.sat_nautique_with_date <- data.frame(cbind(.date_nautique, .nautique_final))
-.sat_pieton_with_date <- data.frame(cbind(.date_pieton, .pieton_final))
-.sat_remarque_with_date <- data.frame(cbind(.date_remarque, .remarque_final))
-
-#####################################################################
-#####################  Analyse of the data  #########################
-#####################################################################
-
-# install.packages("plyr")
-library("plyr")
-
-# Regroup the data by date and calculate the average
-.sat_result_nautique <- ddply(.sat_nautique_with_date, .(.date_nautique), summarize, moyen=-mean(as.numeric(levels(V2))[V2]))
-.sat_result_pieton <- ddply(.sat_pieton_with_date, .(.date_pieton), summarize, moyen=-mean(as.numeric(levels(V2))[V2]))
-.sat_result_remarque <- ddply(.sat_remarque_with_date, .(.date_remarque), summarize, moyen=-mean(as.numeric(levels(V2))[V2]))
-
-# Part II 
-
-# We want to merge the result of "nautique" and "pieton" in order to analyze all the visitors together.
-# So we merge the two result tables and calculate the average satisfaction of each date.
-# At one date, if there are not any record of "nautique", the result is the number of satisfaction "pieton".
-# If there are two records, we calculate the average.
-# At the end, we obtain a table with numbers in [-1,1]
-
-
-# Preperation for merging the tables
-colnames(.sat_result_remarque) <- c("date", "remarque")
-colnames(.sat_result_pieton) <- c("date", "pieton")
-colnames(.sat_result_nautique) <- c("date", "nautique")
-
-# sat_result <- merge(sat_result_remarque, sat_result_nautique, all = T, by="date")
-sat_result <- merge(.sat_result_nautique, .sat_result_pieton, all = T, by = "date")
-
-# Calculate the average
-all_sat <- function(par_mat){
-  new_mat <- format(par_mat[,c(2,3)], scientific = F)
-#   num_all <- which(!is.na(new_mat[,1])&!is.na(new_mat[,2]))
-  new_mat[,1] <- round(as.numeric(unlist(new_mat[,1])), 8)
-  new_mat[,2] <- round(as.numeric(unlist(new_mat[,2])), 8)
-  new_mat[,3] <- apply(new_mat, 1, mean, na.rm = T)
-  res <- data.frame(par_mat[,1], new_mat)
-  colnames(res) <- c("date", "nautique", "pieton", "total")
-  return(res)
-}
-
-sat_result <- all_sat(par_mat = sat_result)
-sat_result_total <- sat_result[,c(1,4)]
+do_data()
