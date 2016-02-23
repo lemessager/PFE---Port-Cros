@@ -2,7 +2,8 @@ library(shiny)
 
 shinyServer(function(input, output) {
   setwd("../data/")
-  source("svm.R")
+  #source("svm.R")
+  source("svm_souple.R")
   source("analyse_meteo.R")
   
   # TAB1 : Affichage des points de satisfaction
@@ -28,10 +29,14 @@ shinyServer(function(input, output) {
   # TAB 3 : Prediction avec SVM
   observeEvent(input$predict, {
     withProgress(message = 'Chargement du modele', value = 0, {
-      run_svm_training()
+      
+      run_svm_training_c(as.numeric(input$critere))
+      
+      #run_svm_training()
       day <<- as.numeric(input$day)
       month <<- as.numeric(input$month)
       withProgress(message = 'Calcul des predictions', value = 0, {
+        
         result <<- run_svm_prediction(day, month)
       })
     })

@@ -63,6 +63,13 @@ shinyUI(
               "Decembre" = 12
             )
           ),
+          selectInput(
+            "critere", "critere", c(
+              "Pieton" = 1,
+              "Nautique" = 2,
+              "Total" = 3
+            )
+          ),
           hr(),
           actionButton("predict", "Lancer la prediction")
         ),

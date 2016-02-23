@@ -17,8 +17,15 @@ load_data <- function() {
   source("satisfaction_version_complet.R")
   source("analyse_debarquement.R")
   library(e1071)
+  G_PIETON = pieton_with_passager_ss
+  G_NAUTIQUE = nautique_with_passager_ss
+  G_TOTAL = total_with_passager_ss
+  names(G_PIETON)[names(G_PIETON)=="debarquement..nombre.de.passagers."]="landing"
+  names(G_NAUTIQUE)[names(G_NAUTIQUE)=="debarquement..nombre.de.passagers."]="landing"
+  names(G_TOTAL)[names(G_TOTAL)=="debarquement..nombre.de.passagers."]="landing"
+  
 }
- 
+
 #rm(list=ls(all=TRUE))
   load_data()
   G_PIETON = pieton_with_passager_ss
@@ -28,7 +35,7 @@ load_data <- function() {
   names(G_NAUTIQUE)[names(G_NAUTIQUE)=="debarquement..nombre.de.passagers."]="landing"
   names(G_TOTAL)[names(G_TOTAL)=="debarquement..nombre.de.passagers."]="landing"
   
-  close_db_connections()
+  #close_db_connections()
   
 # Format the data in order to fit our SVM model
 # We consider data frames with 3 parameters :
@@ -145,9 +152,22 @@ close_db_connections <- function() {
   source("close_db_connections.R")
 }
 
+run_svm_training_c <- function(critere) {
+
+   if (critere==2)
+     run_svm_training(G_NAUTIQUE)
+   else if(critere==3)
+       run_svm_training(G_TOTAL)
+   else
+         run_svm_training(G_PIETON)
+  
+    
+}
+
+
 # MAIN TRAINING FUNCTION
 run_svm_training <- function(L_date_landing_results) {
-  #load_data()
+  load_data()
   init_svm(L_date_landing_results)
   train_svm()
   close_db_connections()
@@ -212,4 +232,10 @@ run_svm_prediction <- function(day, month) {
   
   # Drawing vertical lines when we cross the mean
   abline(v = crossing_mean, col = "gray")
+  
+  big_result = list(
+    "my_result" = my_result, "sat_mean" = sat_mean, "sat_mean_by_month" = sat_mean_by_month, "sat_mean_global" = sat_mean_global, "crossing_mean" = crossing_mean
+  )
+  
+  return(big_result)
 }
