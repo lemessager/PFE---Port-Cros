@@ -68,12 +68,16 @@ shinyUI(
         ),
         mainPanel(
           plotOutput("svmPlot"),
-          br(),
+          hr(),
           textOutput("dailyMean"),
           textOutput("monthlyMean"),
           textOutput("globalMean"),
           br(),
-          textOutput("maxPass")
+          textOutput("maxPass"),
+          hr(),
+          textOutput("explications"),
+          br(),
+          br()
         )
       )
     ),

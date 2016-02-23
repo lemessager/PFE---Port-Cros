@@ -31,7 +31,7 @@ shinyServer(function(input, output) {
       run_svm_training()
       day <<- as.numeric(input$day)
       month <<- as.numeric(input$month)
-      withProgress(message = 'Calcul des predictions', value = 0, {
+      withProgress(message = 'Estimation de la satisfaction', value = 0, {
         result <<- run_svm_prediction(day, month)
       })
     })
@@ -41,6 +41,10 @@ shinyServer(function(input, output) {
       plot(
         result$my_result,type = "p", xlab = "Nombre de passagers", ylab = "Satisfaction"
       )
+      
+      # Some title
+      title("Resultat des estimations")
+      
       # Drawing the daily mean live
       abline(h = result$sat_mean[day, month], col = "red")
       
@@ -71,7 +75,15 @@ shinyServer(function(input, output) {
     })
     
     output$maxPass <- renderText({
-      paste("Nous vous conseillons de limiter le nombre de visiteurs à ", result$crossing_mean)
+      paste(
+        "Nous vous conseillons de limiter le nombre de visiteurs a ", result$crossing_mean, "."
+      )
+    })
+    
+    output$explications <- renderText({
+      paste(
+        "Pour vous fournir ce chiffre, nous regardons quand notre estimation de la satisfaction des visiteurs passe en dessous de la moyenne pour le jour que vous avez choisi. Si la moyenne du jour est trop basse, nous comparons avec la moyenne mensuelle. Si la moyenne mensuelle est trop basse, nous comparons avec la moyenne globale."
+      )
     })
   })
   
@@ -83,12 +95,12 @@ shinyServer(function(input, output) {
     if (input$check) {
       if (input$para == "total") {
         show_sat_meteo(sat_mat = meteo_result, mark = input$met)
-      }else{
+      } else {
         show_det_meteo(
           sat_mat = meteo_result, mark = input$met, detail = input$para
         )
       }
-    }else{
+    } else {
       if (input$para != "total") {
         show_res_meteo(
           sat_mat = meteo_result, mark = input$met, detail = input$para
