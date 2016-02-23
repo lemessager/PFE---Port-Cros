@@ -1,4 +1,4 @@
-####################   Script for SVM training and prediction   ###############
+####################   Script for SVM training and prediction   ##################
 ###
 ###       METHODS:  load_data()
 ###                 init_svm()
@@ -7,9 +7,9 @@
 ###                 close_db_connections()
 ###                 compute_sat_mean()
 ###                 run_svm_training()
-###                 run_svm_prediction()
+###                 run_svm_prediction(day,month)
 ###
-###############################################################################
+##################################################################################
 
 # Load the data from other scripts
 # Load the library for SVM
@@ -112,14 +112,14 @@ capa_charge <- function(day, month) {
     result[i] <- predict(model,B)
     
     # For Shiny App displaying the progress of the prediction
-    #incProgress(1/max_passengers, detail = paste(trunc(100*i/max_passengers)," %"))
+    incProgress(1 / max_passengers, detail = paste(trunc(100 * i / max_passengers)," %"))
   }
   
   # Displaying the result
-  plot(result,type = "p", xlab = "Number of passengers", ylab = "Satisfaction")
+  plot(result,type = "p", xlab = "Nombre de passagers", ylab = "Satisfaction")
   
   # Some title
-  title(paste("Prediction of the satisfaction for the",day,"/", month))
+  title(paste("Prediction de la satisfaction pour le ",day,"/", month))
   
   # Returning the result object for further use
   return(result)
@@ -133,9 +133,13 @@ close_db_connections <- function() {
 # MAIN TRAINING FUNCTION
 run_svm_training <- function() {
   load_data()
+  incProgress(0.25, detail = "25 %")
   init_svm()
+  incProgress(0.25, detail = "50 %")
   train_svm()
+  incProgress(0.25, detail = "75 %")
   close_db_connections()
+  incProgress(0.25, detail = "100 %")
 }
 
 # MAIN PREDICTION FUNCTION
@@ -192,4 +196,11 @@ run_svm_prediction <- function(day, month) {
   
   # Drawing vertical lines when we cross the mean
   abline(v = crossing_mean, col = "gray")
+  
+  # Exporting all the data
+  big_result = list(
+    "my_result" = my_result, "sat_mean" = sat_mean, "sat_mean_by_month" = sat_mean_by_month, "sat_mean_global" = sat_mean_global, "crossing_mean" = crossing_mean
+  )
+  
+  return(big_result)
 }
