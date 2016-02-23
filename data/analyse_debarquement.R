@@ -17,11 +17,11 @@ do_debarquement <- function(){
   .debarquement <- .debarquement[-1]
   .date <- substr(.debarquement[,1],1,10)
   .nbr_passager <- scale(.debarquement[,2], center = T, scale = T)
-  .debarquement_passager <- data.frame(.date, .nbr_passager)
+  .debarquement_passager <<- data.frame(.date, .nbr_passager)
   
   .col_name <- c("date", "result")
 
-  colnames(.debarquement_passager) <- c("date", "nbr_passager")
+  colnames(.debarquement_passager) <<- c("date", "nbr_passager")
   colnames(.sat_result_nautique) <- .col_name
   colnames(.sat_result_pieton) <- .col_name
   colnames(.sat_result_remarque) <- .col_name
