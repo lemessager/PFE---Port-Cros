@@ -10,7 +10,7 @@
 ###                 run_svm_prediction()
 ###
 ###############################################################################
-
+ 
 # Load the data from other scripts
 # Load the library for SVM
 load_data <- function() {
@@ -18,31 +18,46 @@ load_data <- function() {
   source("analyse_debarquement.R")
   library(e1071)
 }
-
+ 
+#rm(list=ls(all=TRUE))
+  load_data()
+  G_PIETON = pieton_with_passager_ss
+  G_NAUTIQUE = nautique_with_passager_ss
+  G_TOTAL = total_with_passager_ss
+  names(G_PIETON)[names(G_PIETON)=="debarquement..nombre.de.passagers."]="landing"
+  names(G_NAUTIQUE)[names(G_NAUTIQUE)=="debarquement..nombre.de.passagers."]="landing"
+  names(G_TOTAL)[names(G_TOTAL)=="debarquement..nombre.de.passagers."]="landing"
+  
+  close_db_connections()
+  
 # Format the data in order to fit our SVM model
-init_svm <- function() {
+# We consider data frames with 3 parameters :
+# - date    YYYY-MM-DD
+# - landing 
+# - result  between -1 and 1
+init_svm <- function(L_date_landing_result) {
   # Deleting data where satisfaction is null
-  pieton_with_passager_ss <-
-    pieton_with_passager_ss[pieton_with_passager_ss$result != 0,]
+  L_date_landing_result <-
+    L_date_landing_result[L_date_landing_result$result != 0,]
   
   # Load satisfaction from data
-  satisfaction <<- pieton_with_passager_ss$result
+  satisfaction <<- L_date_landing_result$result
   
   # Load nbr of passengers from data
   nbr_passagers <-
-    pieton_with_passager_ss$debarquement..nombre.de.passagers.
+    L_date_landing_result$landing
   
   # Load days from data
-  days <- as.integer(substr(pieton_with_passager_ss$date,9,10))
-  
+  days <- as.integer(substr(L_date_landing_result$date,9,10))
+
   # Load months from data
-  months <- as.integer(substr(pieton_with_passager_ss$date,6,7))
+  months <- as.integer(substr(L_date_landing_result$date,6,7))
   
   # Create a data matrix from the extracted days, months and number of passengers
   training_data <<- data.frame(days,months,nbr_passagers)
   
   # Give name to the columns of the previously created matrix
-  colnames(training_data) <- c("days","months","nbr_passagers")
+  colnames(training_data) <<- c("days","months","nbr_passagers")
   
   # Computing the satisfaction mean
   compute_sat_mean()
@@ -131,11 +146,16 @@ close_db_connections <- function() {
 }
 
 # MAIN TRAINING FUNCTION
-run_svm_training <- function() {
-  load_data()
-  init_svm()
+run_svm_training <- function(L_date_landing_results) {
+  #load_data()
+  init_svm(L_date_landing_results)
   train_svm()
   close_db_connections()
+}
+
+run_svm_train_and_predict <- function(L_date_landing_results,day,month) {
+  run_svm_training(L_date_landing_results)
+  run_svm_prediction(day,month)
 }
 
 # MAIN PREDICTION FUNCTION
