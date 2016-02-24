@@ -102,6 +102,7 @@ train_svm <- function () {
 }
 
 # SVM prediction given a date
+# gui -> (if true) display
 capa_charge <- function(day, month) {
   # Init
   result <- 0
@@ -112,7 +113,8 @@ capa_charge <- function(day, month) {
     result[i] <- predict(model,B)
     
     # For Shiny App displaying the progress of the prediction
-    incProgress(1 / max_passengers, detail = paste(trunc(100 * i / max_passengers)," %"))
+    if (!exists("G_gui") || G_gui)
+      incProgress(1 / max_passengers, detail = paste(trunc(100 * i / max_passengers)," %"))
   }
   
   # Displaying the result

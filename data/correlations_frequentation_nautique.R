@@ -3,10 +3,11 @@ source("readTable.R")
 mysql <- readMyTable()
 
 # On recupere la table
-table <- dbGetQuery(mysql, "SELECT * FROM enquete_frequentation_pietonne")
+table <- dbGetQuery(mysql, "SELECT * FROM enquete_frequentation_nautique")
 
 # On enleve les colonnes inutiles
-table <- table[-48]
+table <- table[-65]
+table <- table[-64]
 table <- table[-2]
 table <- table[-1]
 
