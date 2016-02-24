@@ -24,25 +24,11 @@ load_data_souple <- function() {
   G_NAUTIQUE <<- nautique_with_passager_ss
   G_TOTAL <<- total_with_passager_ss
   G_gui = TRUE
-  #do we display progression
-  
-  # G_Landing_STR <<- "debarquement..nombre.de.passagers."
-#   names(G_PIETON)[names(G_PIETON)=="debarquement..nombre.de.passagers."]<<-"landing"
-#   names(G_NAUTIQUE)[names(G_NAUTIQUE)=="debarquement..nombre.de.passagers."]<<-"landing"
-#   names(G_TOTAL)[names(G_TOTAL)=="debarquement..nombre.de.passagers."]<<-"landing"
+  #rm(list=ls(all=TRUE))
   
 }
 
-load_data_souple()
-#rm(list=ls(all=TRUE))
-  load_data()
-  G_PIETON = pieton_with_passager_ss
-  G_NAUTIQUE = nautique_with_passager_ss
-  G_TOTAL = total_with_passager_ss
-#   names(G_PIETON)[names(G_PIETON)=="debarquement..nombre.de.passagers."]="landing"
-#   names(G_NAUTIQUE)[names(G_NAUTIQUE)=="debarquement..nombre.de.passagers."]="landing"
-#   names(G_TOTAL)[names(G_TOTAL)=="debarquement..nombre.de.passagers."]="landing"
-  
+
   #close_db_connections()
   
 # Format the data in order to fit our SVM model
