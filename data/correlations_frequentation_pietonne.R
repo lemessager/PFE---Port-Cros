@@ -7,7 +7,7 @@ table <- dbGetQuery(mysql, "SELECT * FROM enquete_frequentation_pietonne")
 
 # On enleve les colonnes inutiles
 table <- table[-48]
-table <- table[-1]
+table <- table[-2]
 table <- table[-1]
 
 # On met des 0 a la place des NULL
@@ -30,8 +30,8 @@ for (i in 1:my_length) {
 for(i in 1:my_length) {
   plot(my_cor[i,], type = "b", ylab = "Correlation", xaxt='n', ann=FALSE)
   title(colnames(table[i]))
-  axis(1, at=seq(1, 51, by=1), labels = FALSE)
-  text(seq(1, 51, by=1), par("usr")[3] - 0.15, cex = 0.8, labels = strtrim(colnames(table), 8), srt = 90, pos = 1, xpd = TRUE)
+  axis(1, at=seq(1, my_length, by=1), labels = FALSE)
+  text(seq(1, my_length, by=1), par("usr")[3] - 0.15, cex = 0.8, labels = strtrim(colnames(table), 8), srt = 90, pos = 1, xpd = TRUE)
   abline(h = 0.7, col = "red")
   abline(h = - 0.7, col = "red")
   abline(v = i, col = "blue")
