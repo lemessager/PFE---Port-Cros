@@ -34,16 +34,7 @@ do_debarquement <- function(){
   # pieton_with_passager$result <- scale(pieton_with_passager$result, center = T, scale = T)
   # remarque_with_passager$result <- scale(remarque_with_passager$result, center = T, scale = T)
 
-  # Show the result
-  show_res <- function(mat_res, mark){
-    mat_res$result <- scale(mat_res$result, center = T, scale = T)
-    plot(x=mat_res$date, y=mat_res$nbr_passager)
-    title(paste("Satisfaction en fonction de", mark, "et le nombre de passager"))
-    lines(x=mat_res$date, y=mat_res$nbr_passager,col="green")
-    lines(x=mat_res$date, y=mat_res$result, col="red")
-    legend("bottomright",legend=c("niveau de satisfaction", "nombre de passager"), col=c(2,3), lty=1)
-  }
-
+#show_res
 
   # Data without scale
   colnames(debarquement_passager_ss) <- c("date", "debarquement..nombre.de.passagers.")
@@ -52,5 +43,16 @@ do_debarquement <- function(){
   pieton_with_passager_ss <<- merge(debarquement_passager_ss, .sat_result_pieton, by="date")
   total_with_passager_ss <<- merge(debarquement_passager_ss, sat_result_total, by="date")
 }
+
+# Show the result
+show_res <- function(mat_res, mark){
+  mat_res$result <- scale(mat_res$result, center = T, scale = T)
+  plot(x=mat_res$date, y=mat_res$nbr_passager)
+  title(paste("Satisfaction en fonction de", mark, "et le nombre de passager"))
+  lines(x=mat_res$date, y=mat_res$nbr_passager,col="green")
+  lines(x=mat_res$date, y=mat_res$result, col="red")
+  legend("bottomright",legend=c("niveau de satisfaction", "nombre de passager"), col=c(2,3), lty=1)
+}
+
 
 do_debarquement()
