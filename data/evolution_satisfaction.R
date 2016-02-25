@@ -13,10 +13,11 @@ format_data <- function (data) {
 	data <- aggregate(data[, 2:3], list(data$date), mean)
 	data <- cbind(substr(data[,1],4,5), substr(data[,1],1,2), data[,2:3])
 	data <- data[-3]
-	data[,1] <- as.integer(data[,1])
-	data[,2] <- as.integer(data[,2])
-	data[,3] <- as.integer(data[,3])
+	data[,1] <- as.numeric(as.character(data[,1]))
+	data[,2] <- as.numeric(as.character(data[,2]))
+	data[,3] <- as.numeric(as.character(data[,3]))
 	colnames(data) <- c("jour", "mois", "sat")
+	View(data)
 	return(data)
 }
 
