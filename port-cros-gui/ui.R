@@ -6,22 +6,22 @@ shinyUI(
     title = "Dashboard", theme = "main.css",
     
     # TAB 1
-    tabPanel(
-      "Visualistion donnees satisfaction",
-      
-      sidebarLayout(
-        sidebarPanel(
-          selectInput(
-            "sat", "Niveau de satisfaction",
-            choices = c("nautique","pieton","total")
-          ),
-          hr(),
-          helpText("Donnees des enquetes")
-        ),
-        mainPanel(plotOutput("satPlot"))
-      )
-    ),
-    
+#     tabPanel(
+#       "Visualistion donnees satisfaction",
+#       
+#       sidebarLayout(
+#         sidebarPanel(
+#           selectInput(
+#             "sat", "Niveau de satisfaction",
+#             choices = c("nautique","pieton","total")
+#           ),
+#           hr(),
+#           helpText("Donnees des enquetes")
+#         ),
+#         mainPanel(plotOutput("satPlot"))
+#       )
+#     ),
+#     
     # TAB 2
     tabPanel(
       "Visualistion donnees satisfaction / frequentation",

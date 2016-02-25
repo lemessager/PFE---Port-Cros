@@ -7,16 +7,16 @@ shinyServer(function(input, output) {
   #source("analyse_meteo.R")
   
   # TAB1 : Affichage des points de satisfaction
-  output$satPlot <- renderPlot({
-    result <- data.frame(sat_result$date, sat_result[,input$sat])
-    colnames(result) <- c("date", "result")
-    rows <- which(!is.na(result$result))
-    result <- result[rows,]
-    plot(
-      x = result$date, y = result$result, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction", ylim =
-        c(-1,1)
-    )
-  })
+#   output$satPlot <- renderPlot({
+#     result <- data.frame(sat_result$date, sat_result[,input$sat])
+#     colnames(result) <- c("date", "result")
+#     rows <- which(!is.na(result$result))
+#     result <- result[rows,]
+#     plot(
+#       x = result$date, y = result$result, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction", ylim =
+#         c(-1,1)
+#     )
+#   })
   
   # TAB2 : Affichage des liens entre la satisfaction et la frequentation
   output$nomPlot <- renderPlot({
