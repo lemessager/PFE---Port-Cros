@@ -25,6 +25,7 @@ load_data_souple <- function() {
   G_TOTAL <<- total_with_passager_ss
   G_gui = TRUE
   #rm(list=ls(all=TRUE))
+  close_db_connections()
   
 }
 
@@ -88,8 +89,10 @@ run_svm_training_c <- function(critere) {
 
 
 # MAIN TRAINING FUNCTION
-run_svm_training_parametered <- function(L_date_landing_results) {
+run_svm_training_parametered <- function(L_date_landing_results,load=TRUE) {
+  if (load)
   load_data_souple()
+  
   init_svm_parametered(L_date_landing_results)
   train_svm()
   close_db_connections()
