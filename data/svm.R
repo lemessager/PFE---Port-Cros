@@ -119,7 +119,7 @@ capa_charge <- function(day, month) {
   }
   
   # Displaying the result
-  plot(result,type = "p", xlab = "Nombre de passagers", ylab = "Satisfaction")
+  plot(result,type = "l", xlab = "Nombre de passagers", ylab = "Satisfaction")
   
   # Some title
   title(paste("Prediction de la satisfaction pour le ",day,"/", month))

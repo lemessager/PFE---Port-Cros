@@ -43,7 +43,7 @@ shinyServer(function(input, output) {
     output$svmPlot <- renderPlot({
       # Displaying the result
       plot(
-        result$my_result,type = "p", xlab = "Nombre de passagers", ylab = "Satisfaction"
+        result$my_result,type = "l", xlab = "Nombre de passagers", ylab = "Satisfaction", lwd=3
       )
       
       # Some title
@@ -80,7 +80,7 @@ shinyServer(function(input, output) {
     
     output$maxPass <- renderText({
       paste(
-        "Nous vous conseillons de limiter le nombre de visiteurs a ", result$crossing_mean, "."
+        "Nous vous conseillons de limiter le nombre de visiteurs a ", result$crossing_mean
       )
     })
     
