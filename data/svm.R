@@ -83,7 +83,7 @@ compute_sat_mean <- function() {
 }
 
 # Train the SVM model
-train_svm <- function () {
+train_svm <- function (displayresult = FALSE) {
   # Training SVM
   model <<- svm(training_data, satisfaction)
   
@@ -98,7 +98,8 @@ train_svm <- function () {
     round(100 * (1 - (sum(prediction_error) / 2) / length(prediction)))
   
   # Display the score
-  cat(paste("score:", score, "%", sep = " "))
+  if (displayresult)
+    cat(paste("score:", score, "%", sep = " "))
 }
 
 # SVM prediction given a date
