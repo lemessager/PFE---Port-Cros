@@ -30,6 +30,7 @@ load_data_souple <- function() {
 }
 
 load_data_souple()
+
   #close_db_connections()
   
 # Format the data in order to fit our SVM model

@@ -9,14 +9,12 @@
 
 source("svm_souple.R")
 
-load_data_souple()
 
-
-test_data_svm <- function(L_date_landing_results) {
+test_data_svm <- function(L_date_landing_results, table_name ="") {
    Error_Tab <<- c()
    int_ten_percents = as.integer(length(L_date_landing_results[,1])/10)
   int_ninety_percents = length(L_date_landing_results[,1])-int_ten_percents
-   load_data_souple()
+   
   for (i in 1:10){
     L_data_test <<- L_date_landing_results[c((i-1)*int_ten_percents+1:int_ten_percents*i),]
     L_data_train <<-L_date_landing_results[-c((i-1)*int_ten_percents+1:int_ten_percents*i),]
@@ -39,16 +37,18 @@ test_data_svm <- function(L_date_landing_results) {
        B = matrix(c(L_day,L_month,L_pass), nrow = 1, ncol = 3)
        error = predict(model,B)
        Error_Tab <<- cbind(Error_Tab,abs(error-L_sat))
-      Mean_Error_Tab <<- mean(Error_Tab)
-      Mean_Error_Tab_Percent <<- paste(Mean_Error_Tab*50," %")
+      
     }
     
   }
-  
+   Mean_Error_Tab <<- mean(Error_Tab)
+   Mean_Error_Tab_Percent <<- Mean_Error_Tab*50
+   L_display <<- paste("\n ",table_name," (error) : ",Mean_Error_Tab," soit ",Mean_Error_Tab_Percent," %")
+   cat(L_display)
 }
 
 
-# A=c(1,1,2,2)
-# B=c(2,4,4,6)
-# C=c(3,3,3,8)
-# D = data.frame(A,B,C)
+load_data_souple()
+test_data_svm(G_NAUTIQUE,"table nautique ")
+test_data_svm(G_PIETON, " table pieton")
+test_data_svm(G_TOTAL," table totale")
