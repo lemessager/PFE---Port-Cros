@@ -41,6 +41,7 @@ shinyServer(function(input, output) {
     })
     
     output$svmPlot <- renderPlot({
+      
       # Displaying the result
       plot(
         result$my_result,type = "l", xlab = "Nombre de passagers", ylab = "Satisfaction", lwd=3
@@ -60,6 +61,9 @@ shinyServer(function(input, output) {
       
       # Drawing vertical lines when we cross the mean
       abline(v = result$crossing_mean, col = "gray")
+      
+      #Grille
+      grid(17,8)
     })
     
     output$dailyMean <- renderText({
