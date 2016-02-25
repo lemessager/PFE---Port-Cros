@@ -116,9 +116,9 @@ do_data <- function(){
   # Calculate the average
   all_sat <- function(par_mat){
     new_mat <- format(par_mat[,c(2,3,4)], scientific = F)
-    new_mat[,1] <- round(as.numeric(unlist(new_mat[,1])), 8)
-    new_mat[,2] <- round(as.numeric(unlist(new_mat[,2])), 8)
-    new_mat[,3] <- round(as.numeric(unlist(new_mat[,3])), 8)
+    new_mat[,1] <- round(suppressWarnings(as.numeric(unlist(new_mat[,1]))), 8)
+    new_mat[,2] <- round(suppressWarnings(as.numeric(unlist(new_mat[,2]))), 8)
+    new_mat[,3] <- round(suppressWarnings(as.numeric(unlist(new_mat[,3]))), 8)
     new_mat[,4] <- apply(new_mat, 1, mean, na.rm = T)
     res <- data.frame(par_mat[,1], new_mat)
     colnames(res) <- c("date", "nautique", "pieton", "gestion", "total")
