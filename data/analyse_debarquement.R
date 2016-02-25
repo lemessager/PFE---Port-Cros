@@ -11,7 +11,7 @@ do_debarquement <- function(){
   # Connection with the database
   source("satisfaction_version_complet.R")
   # Consideration of the tables 'debarquement'
-  debarquement_passager_ss <- get_table("debarquements")
+  debarquement_passager_ss <<- get_table("debarquements")
 
   nbr_passager <- scale(debarquement_passager_ss[,2], center = T, scale = T)
   .debarquement_passager <<- data.frame(debarquement_passager_ss[,1], nbr_passager)
@@ -56,3 +56,4 @@ show_res <- function(mat_res, mark){
 
 
 do_debarquement()
+
