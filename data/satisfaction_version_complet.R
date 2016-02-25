@@ -37,7 +37,7 @@ get_table <- function(name){
   result <- result[-1]
   result[,1] <- substr(result[,1],1,10)
   if(ncol(result)==7){
-    result[,7] <- -1*(result[,7])/4
+    result[,7] <- (4-result[,7])/4
   }
   return(result)
 }
