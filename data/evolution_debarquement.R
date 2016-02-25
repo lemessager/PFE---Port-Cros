@@ -1,18 +1,24 @@
-source("analyse_debarquement.R")
+load_data <- function (name) {
+  source("readTable.R")
+  mysql = readMyTable()
+  data = dbGetQuery(mysql, paste("SELECT * FROM ", name))
+  source("close_db_connections.R")
+  data = data[-1]
+  data[,1] = substr(data[,1],6,10)
+  colnames(data) = c("date", "nbr")
+  View(data)
+  data = aggregate(data[, 2], list(data$date), mean)
+  View(data)
+  data = cbind(substr(data[,1],4,5), substr(data[,1],1,2), data[,2])
+  table = data.frame(as.numeric(as.character(data[,1])), as.numeric(as.character(data[,2])), as.numeric(as.character(data[,3])))
+  colnames(table) = c("jour", "mois", "nbr")
+  return(table)
+}
 
-
-
-days <- as.integer(substr(debarquement_passager_ss$date,9,10))
-month <- as.integer(substr(debarquement_passager_ss$date,6,7))
-dayNmonth<-substr(debarquement_passager_ss$date,6,10)
-
-G_debarquement <-data.frame(dayNmonth,days,month,debarquement_passager_ss$`nombre debarquements`)
-G_daily_deb <-aggregate(G_debarquement[,2:4], list(G_debarquement$dayNmonth),mean)
-
-for (i in 1:12){
-  G_daily_sub = subset(G_daily_deb,G_daily_deb$month==i)
-  if (length(G_daily_sub[,1])!=0){
-  plot(G_daily_sub$days,G_daily_sub$debarquement_passager_ss..nombre.debarquements.,type ="h")
-  title(i)
-  }
+hist_by_month <- function (name, month) {
+  data = load_data(name)
+  View(data)
+  data = data[data[,2] == month,]
+  data = data[-2]
+  return(data)
 }
