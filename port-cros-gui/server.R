@@ -4,7 +4,7 @@ shinyServer(function(input, output) {
   setwd("../data/")
   #source("svm.R")
   source("svm_souple.R")
-  source("analyse_meteo.R")
+  #source("analyse_meteo.R")
   
   # TAB1 : Affichage des points de satisfaction
   output$satPlot <- renderPlot({
@@ -91,25 +91,5 @@ shinyServer(function(input, output) {
     })
   })
   
-  # TAB 4 : Analyse de meteo
-  output$metPlot <- renderPlot({
-    eval(parse(text = paste(
-      "meteo_result <- .meteo_sat_",input$met,sep = ""
-    )))
-    if (input$check) {
-      if (input$para == "total") {
-        show_sat_meteo(sat_mat = meteo_result, mark = input$met)
-      } else {
-        show_det_meteo(
-          sat_mat = meteo_result, mark = input$met, detail = input$para
-        )
-      }
-    } else {
-      if (input$para != "total") {
-        show_res_meteo(
-          sat_mat = meteo_result, mark = input$met, detail = input$para
-        )
-      }
-    }
-  })
+  
 })
