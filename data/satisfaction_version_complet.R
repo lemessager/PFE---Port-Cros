@@ -32,23 +32,21 @@ options(digits = 8)
 source("readTable.R")
 channel =  readMyTable(); 
 
-do_data <- function(){
-  
-  get_table <- function(name){
-    result <- dbGetQuery(channel, paste("SELECT * FROM", name))
-    result <- result[-1]
-    result[,1] <- substr(result[,1],1,10)
-    if(ncol(result)==7){
-      result[,7] <- -1*(result[,7])/4
-    }
-    return(result)
+get_table <- function(name){
+  result <- dbGetQuery(channel, paste("SELECT * FROM", name))
+  result <- result[-1]
+  result[,1] <- substr(result[,1],1,10)
+  if(ncol(result)==7){
+    result[,7] <- -1*(result[,7])/4
   }
-  
+  return(result)
+}
+
+do_data <- function(){
   # Consideration of two tables 'frequentation'
   nautique <- get_table("nautique")
   pieton <- get_table("pieton")
   gestion <- get_table("gestion")
-
 
   #####################################################################
   ####################  Operation on the data  ########################
