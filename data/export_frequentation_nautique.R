@@ -23,7 +23,6 @@ for(i in 1:length(frequentation)) {
 }
 
 frequentation[is.na(frequentation)] <- 0
-frequentation <- trunc(frequentation)
 
 export <- cbind(id, date, satisfait_nautique, frequentation)
 colnames(export) <- c("id", "date", "visite", "accueil", "info", "preservation", "reglementation", "frequentation")
