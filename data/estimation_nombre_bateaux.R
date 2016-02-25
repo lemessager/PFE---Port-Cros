@@ -1,5 +1,3 @@
-library("plyr")
-
 # Connexion avec MySQL
 source("readTable.R")
 mysql <- readMyTable()
