@@ -37,7 +37,7 @@ get_table <- function(name){
   result <- result[-1]
   result[,1] <- substr(result[,1],1,10)
   if(ncol(result)==7){
-    result[,7] <- (result[,7]-5)/4
+    result[,7] <- (-1*result[,7])/4
   }
   return(result)
 }
@@ -92,8 +92,8 @@ do_data <- function(){
   library("plyr")
   
   # Regroup the data by date and calculate the average
-  .sat_result_nautique <<- ddply(sat_nautique_with_date, .(nautique$date), summarize, moyen=mean(as.numeric(levels(X2))[X2]))
-  .sat_result_pieton <<- ddply(sat_pieton_with_date, .(pieton$date), summarize, moyen=mean(as.numeric(levels(X2))[X2]))
+  .sat_result_nautique <<- ddply(sat_nautique_with_date, .(nautique$date), summarize, moyen=-mean(as.numeric(levels(X2))[X2]))
+  .sat_result_pieton <<- ddply(sat_pieton_with_date, .(pieton$date), summarize, moyen=-mean(as.numeric(levels(X2))[X2]))
   .sat_result_gestion <<- ddply(sat_gestion_with_date, .(gestion$date), summarize, moyen=mean(as.numeric(levels(X2))[X2]))
 
   # Part II 
