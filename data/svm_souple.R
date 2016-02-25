@@ -94,9 +94,23 @@ run_svm_training_parametered <- function(L_date_landing_results,load=TRUE) {
   if (load)
   load_data_souple()
   
+  if (!exists("G_gui") || G_gui)
+    incProgress(0.25, detail = "25 %")
+  
   init_svm_parametered(L_date_landing_results)
+  
+  if (!exists("G_gui") || G_gui)
+    incProgress(0.25, detail = "50 %")
+  
   train_svm()
+  
+  if (!exists("G_gui") || G_gui)
+    incProgress(0.25, detail = "75 %")
+  
   close_db_connections()
+  
+  if (!exists("G_gui") || G_gui)
+    incProgress(0.25, detail = "100 %")
 }
 
 run_svm_train_and_predict <- function(L_date_landing_results,day,month) {
