@@ -1,4 +1,4 @@
-load_data <- function (name) {
+load_data = function (name) {
   source("readTable.R")
   mysql = readMyTable()
   data = dbGetQuery(mysql, paste("SELECT * FROM ", name))
@@ -13,10 +13,15 @@ load_data <- function (name) {
   return(table)
 }
 
-hist_by_month <- function (name, month) {
+freq_by_month <- function (month, name) {
   data = load_data(name)
-  View(data)
   data = data[data[,2] == month,]
   data = data[-2]
-  return(data)
+  base = data.frame(c(1:31), numeric(31))
+  colnames(base) = c("jour", "nbr")
+  my_merge = merge(base,data, by="jour", all=TRUE)
+  result = data.frame(my_merge$jour, my_merge[,2] + my_merge[,3])
+  result[is.na(result)] = 0
+  colnames(result) = c("jour", "nbr")
+  return(result)
 }
