@@ -41,7 +41,7 @@ merge_sat = function (sat_data, mois) {
   tmp = sat_data[sat_data$mois == mois,]
   tmp = tmp[-2]
   my_merge = merge(base,tmp, by="jour", all=TRUE)
-  result = data.frame(my_merge$jour, rowMeans(my_merge[,2:3]))
+  result = data.frame(my_merge$jour, my_merge[,2] + my_merge[,3])
   result[is.na(result)] = 0
   colnames(result) = c("jour", "sat")
   return(result)
