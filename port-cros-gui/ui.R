@@ -6,43 +6,24 @@ shinyUI(
     title = "Dashboard", theme = "main.css",
     
     # TAB 1
-#     tabPanel(
-#       "Visualistion donnees satisfaction",
-#       
-#       sidebarLayout(
-#         sidebarPanel(
-#           selectInput(
-#             "sat", "Niveau de satisfaction",
-#             choices = c("nautique","pieton","total")
-#           ),
-#           hr(),
-#           helpText("Donnees des enquetes")
-#         ),
-#         mainPanel(plotOutput("satPlot"))
-#       )
-#     ),
-#     
-    # TAB 2
     tabPanel(
-      "Visualistion donnees satisfaction / frequentation",
+      "Correlation entre satisfaction et visiteurs",
       
       sidebarLayout(
         sidebarPanel(
           selectInput(
-            "nom", "Niveau de satisfaction en fonction de frequentation",
+            "nom", "Type de visiteurs",
             choices = c("pieton","nautique","total")
-          ),
-          hr(),
-          helpText("Resultat apres l'analyse")
+          )
         ),
         mainPanel(plotOutput("nomPlot"))
       )
     ),
     
     
-    # TAB 3
+    # TAB 2
     tabPanel(
-      "Prediction satisfaction",
+      "Estimer la satisfaction",
       
       sidebarLayout(
         sidebarPanel(
@@ -64,14 +45,14 @@ shinyUI(
             )
           ),
           selectInput(
-            "critere", "critere", c(
+            "critere", "Type de visiteurs", c(
               "Pieton" = 1,
               "Nautique" = 2,
               "Total" = 3
             )
           ),
           hr(),
-          actionButton("predict", "Lancer la prediction")
+          actionButton("predict", "Lancer l'estimation")
         ),
         mainPanel(
           plotOutput("svmPlot"),
@@ -87,7 +68,44 @@ shinyUI(
           br()
         )
       )
+    ),
+    
+    
+    
+    # TAB 3
+    tabPanel(
+      "Evolution de la satisfaction",
+      
+      sidebarLayout(
+        sidebarPanel(
+          selectInput(
+            "month_sat", "Mois", c(
+              "Janvier" = 1,
+              "Fevrier" = 2,
+              "Mars" = 3,
+              "Avril" = 4,
+              "Mai" = 5,
+              "Juin" = 6,
+              "Juillet" = 7,
+              "Aout" = 8,
+              "Septembre" = 9,
+              "Octobre" = 10,
+              "Novembre" = 11,
+              "Decembre" = 12
+            )
+          ),
+          selectInput(
+            "crit_sat", "Type de visiteurs", c(
+              "Pietons" = 1,
+              "Plaisanciers" = 2,
+              "Total" = 3
+              )
+          )
+        ),
+        mainPanel(plotOutput("evo_sat"))
+      )
     )
+    
   
   )
 )
