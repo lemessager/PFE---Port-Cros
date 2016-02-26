@@ -2,10 +2,12 @@ library(shiny)
 
 shinyServer(function(input, output) {
   setwd("../data/")
-  #source("svm.R")
   source("svm_souple.R")
-  #source("analyse_meteo.R")
   source("evolution_satisfaction.R")
+  source("evolution_deb_bat.R")
+  
+  
+  
   
   # TAB 1 : Affichage des liens entre la satisfaction et la frequentation
   output$nomPlot <- renderPlot({
@@ -15,10 +17,13 @@ shinyServer(function(input, output) {
     show_res(mat_res = final_result, mark = paste("frequentation",input$nom))
   })
   
+  
+  
+  
+  
   # TAB 2 : Prediction avec SVM
   observeEvent(input$predict, {
     withProgress(message = 'Chargement du modele', value = 0, {
-      
       run_svm_training_c(as.numeric(input$critere))
       
       #run_svm_training()
@@ -30,10 +35,10 @@ shinyServer(function(input, output) {
     })
     
     output$svmPlot <- renderPlot({
-      
       # Displaying the result
       plot(
-        result$my_result,type = "l", xlab = "Nombre de passagers", ylab = "Satisfaction", lwd=3
+        result$my_result,type = "l", xlab = "Nombre de passagers", ylab = "Satisfaction", lwd =
+          3
       )
       
       # Some title
@@ -72,9 +77,7 @@ shinyServer(function(input, output) {
     })
     
     output$maxPass <- renderText({
-      paste(
-        "Nous vous conseillons de limiter le nombre de visiteurs a ", result$crossing_mean
-      )
+      paste("Nous vous conseillons de limiter le nombre de visiteurs a ", result$crossing_mean)
     })
     
     output$explications <- renderText({
@@ -84,29 +87,60 @@ shinyServer(function(input, output) {
     })
   })
   
+  
+  
+  
+  
   #TAB 3 : Evolution satisfaction
   output$evo_sat <- renderPlot({
     evo_sat_result <- sat_by_month(input$month_sat, input$crit_sat)
     
-    if(sum(evo_sat_result$sat) > 0) {
-      
-      barplot(evo_sat_result$sat, names.arg = c(1:31), col = rainbow(31),
-              main = "Evolution de la satisfaction",
-              xlab = "Jours", ylab = "Satisfaction")
+    if (sum(evo_sat_result$sat) > 0) {
+      barplot(
+        evo_sat_result$sat, names.arg = c(1:31), col = rainbow(31),
+        main = "Evolution de la satisfaction moyenne par jour",
+        xlab = "Jours", ylab = "Satisfaction"
+      )
       
       grid(0,10)
     }
     
     else {
-      evo_sat_result <- data.frame(c(1:31), numeric(31))
-      colnames(evo_sat_result) <- c("jour", "sat")
-      
-      barplot(evo_sat_result$sat, names.arg = c(1:31), col = rainbow(31),
-              main = "Aucune donnee de satisfaction n'est disponible pour ce mois",
-              xlab = "Jours", ylab = "Satisfaction")
+      title("Aucune donnee de satisfaction n'est disponible pour ce mois")
     }
-      
   })
+  
+  
+  
+  
+  #TAB 4 : Evolution Frequentation
+  output$evo_freq <- renderPlot({
+    evo_freq_result <- freq_by_month(input$month_freq, input$type_freq)
+    
+    if (sum(evo_freq_result$nbr) > 0) {
+      if (input$type_freq == "bateaux") {
+        barplot(
+          evo_freq_result$nbr, names.arg = c(1:31), col = rainbow(31),
+          main = "Evolution de la frequentation nautique moyenne par jour",
+          xlab = "Jours", ylab = "Nombre de bateaux de plaisance"
+        )
+      } else {
+        barplot(
+          evo_freq_result$nbr, names.arg = c(1:31), col = rainbow(31),
+          main = "Evolution de la frequentation pietonne moyenne par jour",
+          xlab = "Jours", ylab = "Nombre de debarquements"
+        )
+      }
+      grid(0,10)
+    }
+    
+    else {
+      title("Aucune donnee de frequentation n'est disponible pour ce mois")
+    }
+  })
+  
+  
+  
   
   
 })
