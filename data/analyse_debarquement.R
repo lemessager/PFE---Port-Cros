@@ -58,10 +58,10 @@ do_debarquement <- function(){
 show_res <- function(mat_res, mark){
   mat_res$result <- scale(mat_res$result, center = T, scale = T)
   plot(x=mat_res$date, y=mat_res$nbr_passager)
-  title(paste("Satisfaction en fonction de", mark, "et le nombre de passager"))
+  title(paste("Comparaison entre la satisfaction issue de la", mark, "et le nombre de debarquements"))
   lines(x=mat_res$date, y=mat_res$nbr_passager,col="green")
   lines(x=mat_res$date, y=mat_res$result, col="red")
-  legend("bottomright",legend=c("niveau de satisfaction", "nombre de passager"), col=c(2,3), lty=1)
+  legend("bottomright",legend=c("Satisfaction", "Debarquements"), col=c(2,3), lty=1)
 }
 
 
