@@ -5,20 +5,23 @@ shinyUI(
   navbarPage(
     title = "Dashboard", theme = "main.css",
     
+    
+    
     # TAB 1
     tabPanel(
       "Correlation entre satisfaction et visiteurs",
       
-      sidebarLayout(
-        sidebarPanel(
-          selectInput(
-            "nom", "Type de visiteurs",
-            choices = c("pieton","nautique","total")
-          )
-        ),
-        mainPanel(plotOutput("nomPlot"))
-      )
+      sidebarLayout(sidebarPanel(
+        selectInput(
+          "nom", "Type de visiteurs",
+          choices = c("pieton","nautique","total")
+        )
+      ),
+      mainPanel(plotOutput("nomPlot")))
     ),
+    
+    
+    
     
     
     # TAB 2
@@ -44,6 +47,7 @@ shinyUI(
               "Decembre" = 12
             )
           ),
+          hr(),
           selectInput(
             "critere", "Type de visiteurs", c(
               "Pieton" = 1,
@@ -51,6 +55,7 @@ shinyUI(
               "Total" = 3
             )
           ),
+          helpText("LOL"),
           hr(),
           actionButton("predict", "Lancer l'estimation")
         ),
@@ -69,6 +74,8 @@ shinyUI(
         )
       )
     ),
+    
+    
     
     
     
@@ -99,13 +106,51 @@ shinyUI(
               "Pietons" = 1,
               "Plaisanciers" = 2,
               "Total" = 3
-              )
+            )
           )
         ),
         mainPanel(plotOutput("evo_sat"))
       )
+    ),
+    
+    
+    
+    
+    
+    # TAB 3
+    tabPanel(
+      "Evolution de la frequentation",
+      
+      sidebarLayout(
+        sidebarPanel(
+          selectInput(
+            "month_freq", "Mois", c(
+              "Janvier" = 1,
+              "Fevrier" = 2,
+              "Mars" = 3,
+              "Avril" = 4,
+              "Mai" = 5,
+              "Juin" = 6,
+              "Juillet" = 7,
+              "Aout" = 8,
+              "Septembre" = 9,
+              "Octobre" = 10,
+              "Novembre" = 11,
+              "Decembre" = 12
+            )
+          ),
+          selectInput(
+            "type_freq", "Type de frequentation", c("Debarquements" = "debarquements",
+                                                    "Plaisanciers" = "bateaux")
+          )
+        ),
+        mainPanel(plotOutput("evo_freq"))
+      )
     )
     
-  
+    
+    
+    
+    
   )
 )
