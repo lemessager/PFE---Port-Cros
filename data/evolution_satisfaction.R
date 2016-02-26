@@ -1,4 +1,4 @@
-load_data <- function () {
+load_data = function () {
 	source("analyse_debarquement.R")
 	satisfaction_nautique <<- format_data(nautique_with_passager_ss)
 	satisfaction_pieton <<- format_data(pieton_with_passager_ss)
@@ -6,7 +6,7 @@ load_data <- function () {
 	source("close_db_connections.R")
 }
 
-format_data <- function (data) {
+format_data = function (data) {
 	data <- data[data$result != 0,]
 	data[,1] <- substr(data[,1],6,10)
 	colnames(data) <- c("date", "nbr", "sat")
@@ -17,19 +17,34 @@ format_data <- function (data) {
 	data[,2] <- as.numeric(as.character(data[,2]))
 	data[,3] <- as.numeric(as.character(data[,3]))
 	colnames(data) <- c("jour", "mois", "sat")
-	View(data)
 	return(data)
 }
 
 sat_by_month <- function (mois, critere) {
   if(critere == 1) {
-    tmp = satisfaction_pieton[satisfaction_pieton$mois == mois,]
-  } else if(critere == 2) {
-    tmp = satisfaction_nautique[satisfaction_nautique$mois == mois,]
-  } else {
-    tmp = satisfaction_totale[satisfaction_totale$mois == mois,]
+    result = merge_sat(satisfaction_pieton, mois)
   }
-  return(tmp[-2])
+  
+  else if(critere == 2) {
+    result = merge_sat(satisfaction_nautique, mois)
+  }
+  
+  else {
+    result = merge_sat(satisfaction_totale, mois)
+  }
+  return(result)
+}
+
+merge_sat = function (sat_data, mois) {
+  base = data.frame(c(1:31), numeric(31))
+  colnames(base) = c("jour", "sat")
+  tmp = sat_data[sat_data$mois == mois,]
+  tmp = tmp[-2]
+  my_merge = merge(base,tmp, by="jour", all=TRUE)
+  result = data.frame(my_merge$jour, rowMeans(my_merge[,2:3]))
+  result[is.na(result)] = 0
+  colnames(result) = c("jour", "sat")
+  return(result)
 }
 
 load_data()
