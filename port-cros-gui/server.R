@@ -110,6 +110,12 @@ shinyServer(function(input, output) {
     }
   })
   
+  output$zero_sat <- renderText({
+    paste(
+      "Une satisfaction a 0 signifie souvent une absence de donnees pour ce jour."
+    )
+  })
+  
   
   
   
@@ -137,6 +143,12 @@ shinyServer(function(input, output) {
     else {
       title("Aucune donnee de frequentation n'est disponible pour ce mois")
     }
+  })
+  
+  output$zero_freq <- renderText({
+    paste(
+      "Une frequentation a 0 signifie souvent une absence de donnees pour ce jour."
+    )
   })
   
   

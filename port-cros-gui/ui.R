@@ -55,7 +55,15 @@ shinyUI(
               "Total" = 3
             )
           ),
-          helpText("LOL"),
+          helpText(
+            "PIETON : la satisfaction est estimee a partir des enquetes effectuees aupres des pietons."
+          ),
+          helpText(
+            "NAUTIQUE : la satisfaction est estimee a partir des enquetes effectuees aupres des plaisanciers."
+          ),
+          helpText(
+            "TOTAL : la satisfaction est estimee a partir de la moyenne des deux criteres precedents et de criteres bases sur la gestion (poubelles, sanitaires, interdiction de fumer)."
+          ),
           hr(),
           actionButton("predict", "Lancer l'estimation")
         ),
@@ -101,15 +109,27 @@ shinyUI(
               "Decembre" = 12
             )
           ),
+          hr(),
           selectInput(
             "crit_sat", "Type de visiteurs", c(
               "Pietons" = 1,
               "Plaisanciers" = 2,
               "Total" = 3
             )
+          ),
+          helpText(
+            "PIETONS : la satisfaction est estimee a partir des enquetes effectuees aupres des pietons."
+          ),
+          helpText(
+            "PLAISANCIERS : la satisfaction est estimee a partir des enquetes effectuees aupres des plaisanciers."
+          ),
+          helpText(
+            "TOTAL : la satisfaction est estimee a partir de la moyenne des deux criteres precedents et de criteres bases sur la gestion (poubelles, sanitaires, interdiction de fumer)."
           )
         ),
-        mainPanel(plotOutput("evo_sat"))
+        mainPanel(plotOutput("evo_sat"),
+                  br(),
+                  textOutput("zero_sat"))
       )
     ),
     
@@ -139,12 +159,15 @@ shinyUI(
               "Decembre" = 12
             )
           ),
+          hr(),
           selectInput(
             "type_freq", "Type de frequentation", c("Debarquements" = "debarquements",
                                                     "Plaisanciers" = "bateaux")
           )
         ),
-        mainPanel(plotOutput("evo_freq"))
+        mainPanel(plotOutput("evo_freq"),
+                  br(),
+                  textOutput("zero_freq"))
       )
     )
     
