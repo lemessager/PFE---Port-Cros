@@ -5,20 +5,9 @@ shinyServer(function(input, output) {
   #source("svm.R")
   source("svm_souple.R")
   #source("analyse_meteo.R")
+  source("evolution_satisfaction.R")
   
-  # TAB1 : Affichage des points de satisfaction
-#   output$satPlot <- renderPlot({
-#     result <- data.frame(sat_result$date, sat_result[,input$sat])
-#     colnames(result) <- c("date", "result")
-#     rows <- which(!is.na(result$result))
-#     result <- result[rows,]
-#     plot(
-#       x = result$date, y = result$result, xlab = "Date d'enquete", ylab = "Niveau de satisfaction", main = "Satisfaction", ylim =
-#         c(-1,1)
-#     )
-#   })
-  
-  # TAB2 : Affichage des liens entre la satisfaction et la frequentation
+  # TAB 1 : Affichage des liens entre la satisfaction et la frequentation
   output$nomPlot <- renderPlot({
     eval(parse(
       text = paste("final_result <- ",input$nom,"_with_passager",sep = "")
@@ -26,7 +15,7 @@ shinyServer(function(input, output) {
     show_res(mat_res = final_result, mark = paste("frequentation",input$nom))
   })
   
-  # TAB 3 : Prediction avec SVM
+  # TAB 2 : Prediction avec SVM
   observeEvent(input$predict, {
     withProgress(message = 'Chargement du modele', value = 0, {
       
@@ -93,6 +82,30 @@ shinyServer(function(input, output) {
         "Pour vous fournir ce chiffre, nous regardons quand notre estimation de la satisfaction des visiteurs passe en dessous de la moyenne pour le jour que vous avez choisi. Si la moyenne du jour est trop basse, nous comparons avec la moyenne mensuelle. Si la moyenne mensuelle est trop basse, nous comparons avec la moyenne globale."
       )
     })
+  })
+  
+  #TAB 3 : Evolution satisfaction
+  output$evo_sat <- renderPlot({
+    evo_sat_result <- sat_by_month(input$month_sat, input$crit_sat)
+    
+    if(sum(evo_sat_result$sat) > 0) {
+      
+      barplot(evo_sat_result$sat, names.arg = c(1:31), col = rainbow(31),
+              main = "Evolution de la satisfaction",
+              xlab = "Jours", ylab = "Satisfaction")
+      
+      grid(0,10)
+    }
+    
+    else {
+      evo_sat_result <- data.frame(c(1:31), numeric(31))
+      colnames(evo_sat_result) <- c("jour", "sat")
+      
+      barplot(evo_sat_result$sat, names.arg = c(1:31), col = rainbow(31),
+              main = "Aucune donnee de satisfaction n'est disponible pour ce mois",
+              xlab = "Jours", ylab = "Satisfaction")
+    }
+      
   })
   
   
